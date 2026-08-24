@@ -3,335 +3,470 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Passacurs — Intercanvi de llibres escolars</title>
-  <meta name="description" content="Intercanvi gratuït de llibres de text escolars entre famílies">
+  <title>Passacurs</title>
   <meta name="theme-color" content="#1D9E75">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icona.png">
-  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { max-width: 100%; height: auto; display: block; }
 
-  <!-- Google AdSense — substitueix per el teu codi real -->
-  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX" crossorigin="anonymous"></script> -->
+    :root {
+      --verd: #1D9E75;
+      --verd-fosc: #0F6E56;
+      --verd-clar: #E1F5EE;
+      --taronja: #E8621A;
+      --taronja-clar: #FDF0E8;
+      --blau: #0F2D4A;
+      --fons: #F5F5F0;
+      --blanc: #FFFFFF;
+      --vora: #E5E5E0;
+      --gris: #6B6B65;
+      --text: #1A1A18;
+      --r: 12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--fons);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      max-width: 480px;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+
+    /* SPLASH */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: var(--verd);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 999;
+      transition: opacity 0.4s;
+    }
+    #splash img { width: 100px; height: 100px; object-fit: contain; border-radius: 20px; }
+    #splash p { color: white; font-size: 14px; opacity: 0.85; }
+
+    /* HEADER */
+    header {
+      background: var(--verd);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; color: white; text-decoration: none; cursor: pointer; }
+    .logo img { width: 32px; height: 32px; object-fit: contain; border-radius: 8px; flex-shrink: 0; }
+    .logo span { font-size: 20px; font-weight: 700; }
+    .logo em { font-style: normal; opacity: 0.75; }
+    .header-dreta { display: flex; gap: 8px; }
+    .btn-icon {
+      background: rgba(255,255,255,0.2);
+      border: none; color: white;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; position: relative;
+    }
+    .badge {
+      position: absolute; top: -2px; right: -2px;
+      background: var(--taronja); color: white;
+      font-size: 10px; font-weight: 700;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* MAIN */
+    main { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+
+    /* VISTES */
+    .vista { display: none; flex-direction: column; gap: 14px; }
+    .vista.activa { display: flex; }
+
+    /* CARDS */
+    .card {
+      background: var(--blanc);
+      border-radius: var(--r);
+      border: 1px solid var(--vora);
+      padding: 16px;
+    }
+
+    /* BOTONS GRANS D'ACCIÓ */
+    .btn-accio {
+      display: flex; align-items: center; gap: 14px;
+      padding: 20px 16px;
+      border-radius: var(--r);
+      border: none; cursor: pointer; width: 100%;
+      text-align: left;
+    }
+    .btn-accio.ofereixo { background: var(--verd); color: white; }
+    .btn-accio.busco { background: var(--taronja); color: white; }
+    .btn-accio .ico { font-size: 36px; flex-shrink: 0; }
+    .btn-accio strong { display: block; font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+    .btn-accio span { font-size: 13px; opacity: 0.85; }
+
+    /* TÍTOLS */
+    .titol { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .subtitol { font-size: 13px; color: var(--gris); margin-bottom: 12px; }
+
+    /* FORMULARIS */
+    .grup { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    label { font-size: 13px; font-weight: 500; color: var(--gris); }
+    input, select, textarea {
+      width: 100%; padding: 12px 14px;
+      border: 1px solid var(--vora); border-radius: 10px;
+      font-size: 16px; font-family: inherit;
+      background: white; color: var(--text);
+      outline: none;
+    }
+    input:focus, select:focus { border-color: var(--verd); }
+    .fila-isbn { display: flex; gap: 8px; }
+    .fila-isbn input { flex: 1; }
+    .btn-cam {
+      background: var(--verd-clar); color: var(--verd-fosc);
+      border: 1px solid var(--verd); border-radius: 10px;
+      padding: 12px 14px; font-size: 22px; cursor: pointer; flex-shrink: 0;
+    }
+    .btn-mes-isbn {
+      background: none; border: 1px dashed var(--vora);
+      border-radius: 10px; padding: 10px; width: 100%;
+      color: var(--gris); font-size: 14px; cursor: pointer; margin-bottom: 14px;
+    }
+
+    /* BOTONS */
+    .btn-primary {
+      background: var(--verd); color: white; border: none;
+      border-radius: 10px; padding: 14px; width: 100%;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+    }
+    .btn-primary:active { background: var(--verd-fosc); }
+    .btn-secondary {
+      background: white; color: var(--text);
+      border: 1px solid var(--vora); border-radius: 10px;
+      padding: 14px; width: 100%; font-size: 16px; cursor: pointer;
+    }
+
+    /* CHECKBOX LEGAL */
+    .check-legal {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13px; color: var(--gris); margin-bottom: 14px; line-height: 1.5;
+    }
+    .check-legal input { width: 18px; height: 18px; margin-top: 1px; flex-shrink: 0; accent-color: var(--verd); }
+    .check-legal a { color: var(--verd); }
+
+    /* PILLS */
+    .pill {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 20px; font-size: 11px; font-weight: 500;
+    }
+    .pill.verd { background: var(--verd-clar); color: var(--verd-fosc); }
+    .pill.groc { background: #FFF8E0; color: #8A6800; }
+    .pill.taronja { background: var(--taronja-clar); color: var(--taronja); }
+
+    /* LLISTA LLIBRES */
+    .llibre-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 0; border-bottom: 1px solid var(--vora);
+    }
+    .llibre-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .llibre-portada {
+      width: 48px; height: 64px; border-radius: 4px;
+      object-fit: cover; background: var(--vora); flex-shrink: 0;
+    }
+    .llibre-info { flex: 1; min-width: 0; }
+    .llibre-titol { font-size: 14px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .llibre-meta { font-size: 12px; color: var(--gris); margin-bottom: 6px; }
+
+    /* AVIS */
+    .avis {
+      background: var(--verd-clar); border: 1px solid var(--verd);
+      border-radius: var(--r); padding: 14px 16px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .avis-ico { font-size: 22px; flex-shrink: 0; }
+    .avis strong { display: block; font-size: 14px; font-weight: 600; color: var(--verd-fosc); }
+    .avis span { font-size: 13px; color: var(--verd-fosc); }
+    .btn-avis {
+      display: inline-block; margin-top: 8px;
+      background: var(--verd); color: white; border: none;
+      border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 500; cursor: pointer;
+    }
+
+    /* ESTAT BUIT */
+    .buit { text-align: center; padding: 32px 16px; color: var(--gris); }
+    .buit .ico { font-size: 44px; margin-bottom: 10px; }
+    .buit p { font-size: 14px; }
+
+    /* ADS */
+    .ads {
+      background: #F0F0EB; border-top: 1px solid var(--vora);
+      min-height: 60px; display: flex; align-items: center;
+      justify-content: center; font-size: 11px; color: var(--gris);
+    }
+
+    /* NAV */
+    nav {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      border-top: 1px solid var(--vora); background: white;
+      position: sticky; bottom: 0; z-index: 100;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 0 12px; gap: 3px;
+      border: none; background: none; cursor: pointer;
+      color: var(--gris); font-size: 11px; font-family: inherit;
+    }
+    .nav-item.actiu { color: var(--verd); }
+    .nav-item .ico { font-size: 22px; }
+  </style>
 </head>
 <body>
 
-  <!-- SPLASH -->
-  <div id="splash">
-    <img src="icona.png" alt="Passacurs">
-    <p>Intercanvi gratuït de llibres escolars</p>
+<!-- SPLASH -->
+<div id="splash">
+  <img src="icona.png" alt="Passacurs">
+  <p>Intercanvi gratuït de llibres escolars</p>
+</div>
+
+<!-- HEADER -->
+<header id="header" style="display:none">
+  <div class="logo" onclick="nav('inici')">
+    <img src="icona.png" alt="">
+    <span>Passa<em>curs</em></span>
+  </div>
+  <div class="header-dreta">
+    <button class="btn-icon" onclick="nav('avisos')" aria-label="Avisos">
+      🔔
+      <span class="badge" id="badge" style="display:none">0</span>
+    </button>
+    <button class="btn-icon" onclick="nav('perfil')" aria-label="Perfil">👤</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main id="main" style="display:none">
+
+  <!-- INICI -->
+  <div id="vista-inici" class="vista">
+    <div id="avis-banner" class="avis" style="display:none">
+      <div class="avis-ico">📗</div>
+      <div>
+        <strong>Nova coincidència!</strong>
+        <span id="avis-text">Algú té un llibre que busques.</span>
+        <button class="btn-avis" onclick="nav('busco')">Veure'l</button>
+      </div>
+    </div>
+
+    <button class="btn-accio ofereixo" onclick="nav('ofereixo')">
+      <span class="ico">📚</span>
+      <div>
+        <strong>Ofereixo llibres</strong>
+        <span>Penja els llibres que ja no necessites</span>
+      </div>
+    </button>
+
+    <button class="btn-accio busco" onclick="nav('busco')">
+      <span class="ico">🔍</span>
+      <div>
+        <strong>Busco llibres</strong>
+        <span>Troba els llibres que necessites</span>
+      </div>
+    </button>
+
+    <div class="card">
+      <p class="titol">Els meus llibres</p>
+      <div id="meus-llibres">
+        <div class="buit"><div class="ico">📭</div><p>Encara no has publicat cap llibre</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="titol">Estic buscant</p>
+      <div id="busco-llibres">
+        <div class="buit"><div class="ico">🔎</div><p>Afegeix llibres que necessites</p></div>
+      </div>
+    </div>
   </div>
 
-  <!-- CAPÇALERA -->
-  <header id="capçalera" style="display:none">
-    <a href="#" class="logo" onclick="mostraVista('inici')">
-      <img src="icona.png" alt="Passacurs">
-      <span>Passa<em>curs</em></span>
-    </a>
-    <div class="header-actions">
-      <button class="btn-icon" onclick="mostraVista('avisos')" title="Avisos" aria-label="Avisos">
-        🔔
-        <span class="badge" id="badge-avisos" style="display:none">0</span>
-      </button>
-      <button class="btn-icon" onclick="mostraVista('perfil')" title="El meu perfil" aria-label="Perfil">
-        👤
-      </button>
-    </div>
-  </header>
-
-  <!-- CONTINGUT PRINCIPAL -->
-  <main id="main" style="display:none">
-
-    <!-- ======= VISTA: INICI ======= -->
-    <div id="vista-inici" class="vista activa">
-
-      <!-- Avis exemple -->
-      <div class="avis" id="avis-nou-llibre" style="display:none">
-        <div class="avis-icona">📗</div>
-        <div class="avis-text">
-          <strong>Nova coincidència!</strong>
-          <span id="avis-text-contingut">En Joan acaba d'oferir un llibre que busques.</span>
-          <br>
-          <button class="btn-avis" onclick="mostraVista('busco')">Veure'l</button>
+  <!-- OFEREIXO -->
+  <div id="vista-ofereixo" class="vista">
+    <p class="titol">Afegeix un llibre</p>
+    <div class="card">
+      <div class="grup">
+        <label>ISBN del llibre</label>
+        <div class="fila-isbn">
+          <input type="text" id="isbn-in" placeholder="9788430770..." inputmode="numeric">
+          <button class="btn-cam" id="btn-cam" title="Escaneja">📷</button>
         </div>
       </div>
-
-      <!-- Botons principals -->
-      <button class="btn-accio ofereixo" onclick="mostraVista('ofereixo')">
-        <span class="icona">📚</span>
-        <div class="text-accio">
-          <strong>Ofereixo llibres</strong>
-          <span>Penja els llibres que ja no necessites</span>
-        </div>
-      </button>
-
-      <button class="btn-accio busco" onclick="mostraVista('busco')">
-        <span class="icona">🔍</span>
-        <div class="text-accio">
-          <strong>Busco llibres</strong>
-          <span>Troba els llibres que necessites</span>
-        </div>
-      </button>
-
-      <!-- Els meus llibres publicats -->
-      <div class="card">
-        <p class="seccio-titol">Els meus llibres</p>
-        <p class="seccio-subtitol">Llibres que estàs oferint ara</p>
-        <div id="llista-meus-llibres" style="margin-top: 12px;">
-          <div class="estat-buit">
-            <div class="buit-icona">📭</div>
-            <p>Encara no has publicat cap llibre</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Llibres que busco -->
-      <div class="card">
-        <p class="seccio-titol">Estic buscant</p>
-        <p class="seccio-subtitol">Llibres a la teva llista de cerca</p>
-        <div id="llista-busco" style="margin-top: 12px;">
-          <div class="estat-buit">
-            <div class="buit-icona">🔎</div>
-            <p>Encara no has cercat cap llibre</p>
-          </div>
-        </div>
-      </div>
+      <button class="btn-primary" onclick="cercaISBN()">Cerca el llibre</button>
     </div>
 
-    <!-- ======= VISTA: OFEREIXO ======= -->
-    <div id="vista-ofereixo" class="vista">
-      <div>
-        <p class="seccio-titol">Afegeix un llibre</p>
-        <p class="seccio-subtitol">Escaneja el codi de barres o introdueix l'ISBN</p>
+    <div class="card" id="resultat-isbn" style="display:none">
+      <div class="llibre-item" style="padding:0;border:none">
+        <img class="llibre-portada" id="isbn-portada" src="" alt="">
+        <div class="llibre-info">
+          <p class="llibre-titol" id="isbn-titol">—</p>
+          <p class="llibre-meta" id="isbn-meta">—</p>
+        </div>
       </div>
-
-      <div class="card">
-        <div class="form-grup">
-          <label for="isbn-entrada">ISBN del llibre</label>
-          <div class="isbn-fila">
-            <input type="number" id="isbn-entrada" placeholder="9788430770..." inputmode="numeric">
-            <button class="btn-escaneja" id="btn-escaneja" title="Escaneja el codi de barres" aria-label="Escaneja">📷</button>
-          </div>
-        </div>
-        <button class="btn-primary" onclick="cercaISBN()">Cerca el llibre</button>
+      <hr style="border:none;border-top:1px solid var(--vora);margin:14px 0">
+      <div class="grup">
+        <label for="estat-ex">Estat de l'exemplar</label>
+        <select id="estat-ex">
+          <option value="">Selecciona l'estat...</option>
+          <option value="nou">Nou</option>
+          <option value="com_nou">Com nou</option>
+          <option value="bo">Bo</option>
+          <option value="acceptable">Acceptable</option>
+          <option value="molt_usat">Molt usat</option>
+        </select>
       </div>
-
-      <!-- Resultat de cerca ISBN -->
-      <div class="card" id="resultat-isbn" style="display:none">
-        <div class="llibre-item" style="padding:0; border:none;">
-          <img class="llibre-portada" id="isbn-portada" src="" alt="">
-          <div class="llibre-info">
-            <p class="llibre-titol" id="isbn-titol">—</p>
-            <p class="llibre-meta" id="isbn-meta">—</p>
-          </div>
-        </div>
-
-        <hr style="border:none; border-top: 1px solid var(--gris-vora); margin: 14px 0;">
-
-        <div class="form-grup">
-          <label for="estat-exemplar">Estat de l'exemplar</label>
-          <select id="estat-exemplar">
-            <option value="">Selecciona l'estat...</option>
-            <option value="nou">Nou</option>
-            <option value="com_nou">Com nou</option>
-            <option value="bo">Bo</option>
-            <option value="acceptable">Acceptable</option>
-            <option value="molt_usat">Molt usat</option>
-          </select>
-        </div>
-
-        <div class="form-grup">
-          <label for="foto-exemplar">Foto de l'exemplar (opcional)</label>
-          <input type="file" id="foto-exemplar" accept="image/*" capture="environment">
-        </div>
-
-        <button class="btn-primary" onclick="publicaLlibre()">Publicar llibre</button>
+      <div class="grup">
+        <label>Foto de l'exemplar (opcional)</label>
+        <input type="file" accept="image/*" capture="environment">
       </div>
+      <button class="btn-primary" onclick="publicaLlibre()">Publicar llibre</button>
     </div>
-
-    <!-- ======= VISTA: BUSCO ======= -->
-    <div id="vista-busco" class="vista">
-      <div>
-        <p class="seccio-titol">Busca llibres</p>
-        <p class="seccio-subtitol">Introdueix els ISBN dels llibres que necessites</p>
-      </div>
-
-      <div class="card">
-        <div id="llista-isbns-busco">
-          <div class="form-grup">
-            <label>ISBN #1</label>
-            <input type="number" class="isbn-busco" placeholder="9788430770..." inputmode="numeric">
-          </div>
-        </div>
-        <button class="btn-afegir-isbn" onclick="afegeixISBN()">+ Afegir un altre llibre</button>
-        <br><br>
-        <button class="btn-primary" onclick="cercaLlibres()">Aquests són tots els que busco</button>
-      </div>
-
-      <!-- Resultats de cerca -->
-      <div id="resultats-busco" style="display:none">
-        <p class="seccio-titol">Resultats</p>
-        <div id="llista-resultats"></div>
-      </div>
-    </div>
-
-    <!-- ======= VISTA: PERFIL USUARI OFERIDOR ======= -->
-    <div id="vista-perfil-oferidor" class="vista">
-      <div>
-        <p class="seccio-titol" id="nom-oferidor">—</p>
-        <p class="seccio-subtitol" id="municipi-oferidor">—</p>
-      </div>
-
-      <div class="card">
-        <p style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Marca els que t'interessen:</p>
-        <div id="llista-llibres-oferidor"></div>
-      </div>
-
-      <button class="btn-primary" id="btn-whatsapp" onclick="obreWhatsApp()">
-        💬 Contactar per WhatsApp
-      </button>
-      <button class="btn-secondary" onclick="mostraVista('busco')">← Tornar als resultats</button>
-    </div>
-
-    <!-- ======= VISTA: AVISOS ======= -->
-    <div id="vista-avisos" class="vista">
-      <p class="seccio-titol">Avisos</p>
-      <div id="llista-avisos">
-        <div class="estat-buit">
-          <div class="buit-icona">🔔</div>
-          <p>No tens cap avís nou</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ======= VISTA: PERFIL PROPI ======= -->
-    <div id="vista-perfil" class="vista">
-      <p class="seccio-titol">El meu perfil</p>
-      <div class="card">
-        <div class="form-grup">
-          <label>Nom d'usuari</label>
-          <input type="text" id="perfil-nom" readonly>
-        </div>
-        <div class="form-grup">
-          <label>Municipi</label>
-          <input type="text" id="perfil-municipi" readonly>
-        </div>
-        <button class="btn-secondary" onclick="tancaSessio()">Tancar sessió</button>
-      </div>
-    </div>
-
-    <!-- ======= VISTA: LOGIN ======= -->
-    <div id="vista-login" class="vista">
-      <div style="text-align:center; padding: 20px 0 8px;">
-        <img src="icona.png" alt="Passacurs" style="width:80px; height:80px; object-fit:cover; border-radius: 18px; margin-bottom: 12px;">
-        <p class="seccio-titol">Benvingut a Passacurs</p>
-        <p class="seccio-subtitol">Intercanvi gratuït de llibres escolars</p>
-      </div>
-
-      <div class="card">
-        <div class="form-grup">
-          <label for="login-email">Correu electrònic</label>
-          <input type="email" id="login-email" placeholder="correu@exemple.com">
-        </div>
-        <div class="form-grup">
-          <label for="login-password">Contrasenya</label>
-          <input type="password" id="login-password" placeholder="••••••••">
-        </div>
-        <button class="btn-primary" onclick="iniciaSessio()">Entrar</button>
-        <br><br>
-        <button class="btn-secondary" onclick="mostraVista('registre')">Crear compte nou</button>
-      </div>
-    </div>
-
-    <!-- ======= VISTA: REGISTRE ======= -->
-    <div id="vista-registre" class="vista">
-      <div>
-        <p class="seccio-titol">Crea el teu compte</p>
-        <p class="seccio-subtitol">Gratuït i sense confirmació de correu</p>
-      </div>
-
-      <div class="card">
-        <div class="form-grup">
-          <label for="reg-nom">Nom d'usuari</label>
-          <input type="text" id="reg-nom" placeholder="ex: la_maria_bcn">
-        </div>
-        <div class="form-grup">
-          <label for="reg-email">Correu electrònic</label>
-          <input type="email" id="reg-email" placeholder="correu@exemple.com">
-        </div>
-        <div class="form-grup">
-          <label for="reg-telefon">Telèfon (WhatsApp)</label>
-          <input type="tel" id="reg-telefon" placeholder="6XX XXX XXX" inputmode="tel">
-        </div>
-        <div class="form-grup">
-          <label for="reg-provincia">Província</label>
-          <select id="reg-provincia" onchange="carregaMunicipis()">
-            <option value="">Selecciona província...</option>
-            <option value="barcelona">Barcelona</option>
-            <option value="girona">Girona</option>
-            <option value="lleida">Lleida</option>
-            <option value="tarragona">Tarragona</option>
-          </select>
-        </div>
-        <div class="form-grup">
-          <label for="reg-municipi">Municipi</label>
-          <select id="reg-municipi" disabled>
-            <option value="">Primer selecciona la província</option>
-          </select>
-        </div>
-        <div class="form-grup">
-          <label for="reg-password">Contrasenya</label>
-          <input type="password" id="reg-password" placeholder="Mínim 8 caràcters">
-        </div>
-
-        <div style="font-size: 12px; color: var(--gris-text); margin-bottom: 14px; line-height: 1.6;">
-          <label style="display:flex; gap:8px; align-items:flex-start; font-weight:400; color:var(--gris-text);">
-            <input type="checkbox" id="reg-privacitat" style="width:auto; margin-top:2px;">
-            He llegit i accepto la <a href="/privacitat.html" target="_blank" style="color:var(--verd)">Política de Privacitat</a> i les <a href="/condicions.html" target="_blank" style="color:var(--verd)">Condicions d'Ús</a>
-          </label>
-        </div>
-
-        <button class="btn-primary" onclick="registraUsuari()">Crear compte</button>
-        <br><br>
-        <button class="btn-secondary" onclick="mostraVista('login')">Ja tinc compte</button>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- BANNER PUBLICITAT -->
-  <div class="ads-banner" id="ads-banner" style="display:none">
-    <!-- Google AdSense Banner -->
-    <span style="color: var(--gris-text); font-size: 11px;">Publicitat</span>
-    <!--
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-XXXXXXXXXX"
-         data-ad-slot="XXXXXXXXXX"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    -->
   </div>
 
-  <!-- BARRA NAVEGACIÓ INFERIOR -->
-  <nav class="nav-bar" id="nav-bar" style="display:none">
-    <button class="nav-item actiu" id="nav-inici" onclick="mostraVista('inici')">
-      <span class="nav-icona">🏠</span>
-      Inici
-    </button>
-    <button class="nav-item" id="nav-ofereixo" onclick="mostraVista('ofereixo')">
-      <span class="nav-icona">📚</span>
-      Ofereixo
-    </button>
-    <button class="nav-item" id="nav-busco" onclick="mostraVista('busco')">
-      <span class="nav-icona">🔍</span>
-      Busco
-    </button>
-  </nav>
+  <!-- BUSCO -->
+  <div id="vista-busco" class="vista">
+    <p class="titol">Busca llibres</p>
+    <div class="card">
+      <p class="subtitol">Introdueix els ISBN dels llibres que necessites</p>
+      <div id="isbns-busco">
+        <div class="grup">
+          <label>ISBN #1</label>
+          <input type="text" class="isbn-b" placeholder="9788430770..." inputmode="numeric">
+        </div>
+      </div>
+      <button class="btn-mes-isbn" onclick="afegeixISBN()">+ Afegir un altre llibre</button>
+      <button class="btn-primary" onclick="cercaLlibres()">Aquests són tots els que busco</button>
+    </div>
+    <div id="resultats-busco" style="display:none">
+      <p class="titol">Resultats</p>
+      <div id="llista-resultats"></div>
+    </div>
+  </div>
 
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/config.js"></script>
-  <script src="/js/app.js"></script>
+  <!-- PERFIL OFERIDOR -->
+  <div id="vista-perfil-oferidor" class="vista">
+    <div>
+      <p class="titol" id="oferidor-nom">—</p>
+      <p class="subtitol" id="oferidor-muni">—</p>
+    </div>
+    <div class="card">
+      <p style="font-size:14px;font-weight:600;margin-bottom:12px">Marca els que t'interessen:</p>
+      <div id="oferidor-llibres"></div>
+    </div>
+    <button class="btn-primary" onclick="obreWhatsApp()">💬 Contactar per WhatsApp</button>
+    <button class="btn-secondary" onclick="nav('busco')">← Tornar</button>
+  </div>
+
+  <!-- AVISOS -->
+  <div id="vista-avisos" class="vista">
+    <p class="titol">Avisos</p>
+    <div id="llista-avisos">
+      <div class="buit"><div class="ico">🔔</div><p>No tens cap avís nou</p></div>
+    </div>
+  </div>
+
+  <!-- PERFIL -->
+  <div id="vista-perfil" class="vista">
+    <p class="titol">El meu perfil</p>
+    <div class="card">
+      <div class="grup"><label>Nom d'usuari</label><input id="p-nom" readonly></div>
+      <div class="grup"><label>Municipi</label><input id="p-muni" readonly></div>
+      <button class="btn-secondary" onclick="tancaSessio()">Tancar sessió</button>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="vista-login" class="vista">
+    <div style="text-align:center;padding:24px 0 8px">
+      <img src="icona.png" alt="Passacurs" style="width:80px;height:80px;object-fit:contain;border-radius:18px;margin:0 auto 12px">
+      <p class="titol">Benvingut a Passacurs</p>
+      <p class="subtitol">Intercanvi gratuït de llibres escolars</p>
+    </div>
+    <div class="card">
+      <div class="grup"><label>Correu electrònic</label><input type="email" id="l-email" placeholder="correu@exemple.com"></div>
+      <div class="grup"><label>Contrasenya</label><input type="password" id="l-pass" placeholder="••••••••"></div>
+      <button class="btn-primary" onclick="login()">Entrar</button>
+      <br><br>
+      <button class="btn-secondary" onclick="nav('registre')">Crear compte nou</button>
+    </div>
+  </div>
+
+  <!-- REGISTRE -->
+  <div id="vista-registre" class="vista">
+    <p class="titol">Crea el teu compte</p>
+    <div class="card">
+      <div class="grup"><label>Nom d'usuari</label><input type="text" id="r-nom" placeholder="ex: la_maria_bcn"></div>
+      <div class="grup"><label>Correu electrònic</label><input type="email" id="r-email" placeholder="correu@exemple.com"></div>
+      <div class="grup"><label>Telèfon (WhatsApp)</label><input type="tel" id="r-tel" placeholder="6XX XXX XXX"></div>
+      <div class="grup">
+        <label>Província</label>
+        <select id="r-prov" onchange="carregaMunicipis()">
+          <option value="">Selecciona província...</option>
+          <option value="barcelona">Barcelona</option>
+          <option value="girona">Girona</option>
+          <option value="lleida">Lleida</option>
+          <option value="tarragona">Tarragona</option>
+        </select>
+      </div>
+      <div class="grup">
+        <label>Municipi</label>
+        <select id="r-muni" disabled>
+          <option value="">Primer selecciona la província</option>
+        </select>
+      </div>
+      <div class="grup"><label>Contrasenya</label><input type="password" id="r-pass" placeholder="Mínim 8 caràcters"></div>
+      <div class="check-legal">
+        <input type="checkbox" id="r-legal">
+        <span>He llegit i accepto la <a href="privacitat.html" target="_blank">Política de Privacitat</a> i les <a href="condicions.html" target="_blank">Condicions d'Ús</a></span>
+      </div>
+      <button class="btn-primary" onclick="registre()">Crear compte</button>
+      <br><br>
+      <button class="btn-secondary" onclick="nav('login')">Ja tinc compte</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- ADS -->
+<div class="ads" id="ads" style="display:none">
+  <span>Publicitat</span>
+</div>
+
+<!-- NAV -->
+<nav id="nav" style="display:none">
+  <button class="nav-item actiu" id="nav-inici" onclick="nav('inici')">
+    <span class="ico">🏠</span>Inici
+  </button>
+  <button class="nav-item" id="nav-ofereixo" onclick="nav('ofereixo')">
+    <span class="ico">📚</span>Ofereixo
+  </button>
+  <button class="nav-item" id="nav-busco" onclick="nav('busco')">
+    <span class="ico">🔍</span>Busco
+  </button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
