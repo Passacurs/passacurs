@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Passacurs — Intercanvi de llibres escolars</title>
+  <meta name="description" content="Intercanvi gratuït de llibres de text escolars entre famílies">
+  <meta name="theme-color" content="#1D9E75">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="icona.png">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Google AdSense — substitueix per el teu codi real -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX" crossorigin="anonymous"></script> -->
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splash">
+    <img src="icona.png" alt="Passacurs">
+    <p>Intercanvi gratuït de llibres escolars</p>
+  </div>
+
+  <!-- CAPÇALERA -->
+  <header id="capçalera" style="display:none">
+    <a href="#" class="logo" onclick="mostraVista('inici')">
+      <img src="icona.png" alt="Passacurs">
+      <span>Passa<em>curs</em></span>
+    </a>
+    <div class="header-actions">
+      <button class="btn-icon" onclick="mostraVista('avisos')" title="Avisos" aria-label="Avisos">
+        🔔
+        <span class="badge" id="badge-avisos" style="display:none">0</span>
+      </button>
+      <button class="btn-icon" onclick="mostraVista('perfil')" title="El meu perfil" aria-label="Perfil">
+        👤
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTINGUT PRINCIPAL -->
+  <main id="main" style="display:none">
+
+    <!-- ======= VISTA: INICI ======= -->
+    <div id="vista-inici" class="vista activa">
+
+      <!-- Avis exemple -->
+      <div class="avis" id="avis-nou-llibre" style="display:none">
+        <div class="avis-icona">📗</div>
+        <div class="avis-text">
+          <strong>Nova coincidència!</strong>
+          <span id="avis-text-contingut">En Joan acaba d'oferir un llibre que busques.</span>
+          <br>
+          <button class="btn-avis" onclick="mostraVista('busco')">Veure'l</button>
+        </div>
+      </div>
+
+      <!-- Botons principals -->
+      <button class="btn-accio ofereixo" onclick="mostraVista('ofereixo')">
+        <span class="icona">📚</span>
+        <div class="text-accio">
+          <strong>Ofereixo llibres</strong>
+          <span>Penja els llibres que ja no necessites</span>
+        </div>
+      </button>
+
+      <button class="btn-accio busco" onclick="mostraVista('busco')">
+        <span class="icona">🔍</span>
+        <div class="text-accio">
+          <strong>Busco llibres</strong>
+          <span>Troba els llibres que necessites</span>
+        </div>
+      </button>
+
+      <!-- Els meus llibres publicats -->
+      <div class="card">
+        <p class="seccio-titol">Els meus llibres</p>
+        <p class="seccio-subtitol">Llibres que estàs oferint ara</p>
+        <div id="llista-meus-llibres" style="margin-top: 12px;">
+          <div class="estat-buit">
+            <div class="buit-icona">📭</div>
+            <p>Encara no has publicat cap llibre</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Llibres que busco -->
+      <div class="card">
+        <p class="seccio-titol">Estic buscant</p>
+        <p class="seccio-subtitol">Llibres a la teva llista de cerca</p>
+        <div id="llista-busco" style="margin-top: 12px;">
+          <div class="estat-buit">
+            <div class="buit-icona">🔎</div>
+            <p>Encara no has cercat cap llibre</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= VISTA: OFEREIXO ======= -->
+    <div id="vista-ofereixo" class="vista">
+      <div>
+        <p class="seccio-titol">Afegeix un llibre</p>
+        <p class="seccio-subtitol">Escaneja el codi de barres o introdueix l'ISBN</p>
+      </div>
+
+      <div class="card">
+        <div class="form-grup">
+          <label for="isbn-entrada">ISBN del llibre</label>
+          <div class="isbn-fila">
+            <input type="number" id="isbn-entrada" placeholder="9788430770..." inputmode="numeric">
+            <button class="btn-escaneja" id="btn-escaneja" title="Escaneja el codi de barres" aria-label="Escaneja">📷</button>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="cercaISBN()">Cerca el llibre</button>
+      </div>
+
+      <!-- Resultat de cerca ISBN -->
+      <div class="card" id="resultat-isbn" style="display:none">
+        <div class="llibre-item" style="padding:0; border:none;">
+          <img class="llibre-portada" id="isbn-portada" src="" alt="">
+          <div class="llibre-info">
+            <p class="llibre-titol" id="isbn-titol">—</p>
+            <p class="llibre-meta" id="isbn-meta">—</p>
+          </div>
+        </div>
+
+        <hr style="border:none; border-top: 1px solid var(--gris-vora); margin: 14px 0;">
+
+        <div class="form-grup">
+          <label for="estat-exemplar">Estat de l'exemplar</label>
+          <select id="estat-exemplar">
+            <option value="">Selecciona l'estat...</option>
+            <option value="nou">Nou</option>
+            <option value="com_nou">Com nou</option>
+            <option value="bo">Bo</option>
+            <option value="acceptable">Acceptable</option>
+            <option value="molt_usat">Molt usat</option>
+          </select>
+        </div>
+
+        <div class="form-grup">
+          <label for="foto-exemplar">Foto de l'exemplar (opcional)</label>
+          <input type="file" id="foto-exemplar" accept="image/*" capture="environment">
+        </div>
+
+        <button class="btn-primary" onclick="publicaLlibre()">Publicar llibre</button>
+      </div>
+    </div>
+
+    <!-- ======= VISTA: BUSCO ======= -->
+    <div id="vista-busco" class="vista">
+      <div>
+        <p class="seccio-titol">Busca llibres</p>
+        <p class="seccio-subtitol">Introdueix els ISBN dels llibres que necessites</p>
+      </div>
+
+      <div class="card">
+        <div id="llista-isbns-busco">
+          <div class="form-grup">
+            <label>ISBN #1</label>
+            <input type="number" class="isbn-busco" placeholder="9788430770..." inputmode="numeric">
+          </div>
+        </div>
+        <button class="btn-afegir-isbn" onclick="afegeixISBN()">+ Afegir un altre llibre</button>
+        <br><br>
+        <button class="btn-primary" onclick="cercaLlibres()">Aquests són tots els que busco</button>
+      </div>
+
+      <!-- Resultats de cerca -->
+      <div id="resultats-busco" style="display:none">
+        <p class="seccio-titol">Resultats</p>
+        <div id="llista-resultats"></div>
+      </div>
+    </div>
+
+    <!-- ======= VISTA: PERFIL USUARI OFERIDOR ======= -->
+    <div id="vista-perfil-oferidor" class="vista">
+      <div>
+        <p class="seccio-titol" id="nom-oferidor">—</p>
+        <p class="seccio-subtitol" id="municipi-oferidor">—</p>
+      </div>
+
+      <div class="card">
+        <p style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Marca els que t'interessen:</p>
+        <div id="llista-llibres-oferidor"></div>
+      </div>
+
+      <button class="btn-primary" id="btn-whatsapp" onclick="obreWhatsApp()">
+        💬 Contactar per WhatsApp
+      </button>
+      <button class="btn-secondary" onclick="mostraVista('busco')">← Tornar als resultats</button>
+    </div>
+
+    <!-- ======= VISTA: AVISOS ======= -->
+    <div id="vista-avisos" class="vista">
+      <p class="seccio-titol">Avisos</p>
+      <div id="llista-avisos">
+        <div class="estat-buit">
+          <div class="buit-icona">🔔</div>
+          <p>No tens cap avís nou</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= VISTA: PERFIL PROPI ======= -->
+    <div id="vista-perfil" class="vista">
+      <p class="seccio-titol">El meu perfil</p>
+      <div class="card">
+        <div class="form-grup">
+          <label>Nom d'usuari</label>
+          <input type="text" id="perfil-nom" readonly>
+        </div>
+        <div class="form-grup">
+          <label>Municipi</label>
+          <input type="text" id="perfil-municipi" readonly>
+        </div>
+        <button class="btn-secondary" onclick="tancaSessio()">Tancar sessió</button>
+      </div>
+    </div>
+
+    <!-- ======= VISTA: LOGIN ======= -->
+    <div id="vista-login" class="vista">
+      <div style="text-align:center; padding: 20px 0 8px;">
+        <img src="icona.png" alt="Passacurs" style="width:80px; border-radius: 18px; margin-bottom: 12px;">
+        <p class="seccio-titol">Benvingut a Passacurs</p>
+        <p class="seccio-subtitol">Intercanvi gratuït de llibres escolars</p>
+      </div>
+
+      <div class="card">
+        <div class="form-grup">
+          <label for="login-email">Correu electrònic</label>
+          <input type="email" id="login-email" placeholder="correu@exemple.com">
+        </div>
+        <div class="form-grup">
+          <label for="login-password">Contrasenya</label>
+          <input type="password" id="login-password" placeholder="••••••••">
+        </div>
+        <button class="btn-primary" onclick="iniciaSessio()">Entrar</button>
+        <br><br>
+        <button class="btn-secondary" onclick="mostraVista('registre')">Crear compte nou</button>
+      </div>
+    </div>
+
+    <!-- ======= VISTA: REGISTRE ======= -->
+    <div id="vista-registre" class="vista">
+      <div>
+        <p class="seccio-titol">Crea el teu compte</p>
+        <p class="seccio-subtitol">Gratuït i sense confirmació de correu</p>
+      </div>
+
+      <div class="card">
+        <div class="form-grup">
+          <label for="reg-nom">Nom d'usuari</label>
+          <input type="text" id="reg-nom" placeholder="ex: la_maria_bcn">
+        </div>
+        <div class="form-grup">
+          <label for="reg-email">Correu electrònic</label>
+          <input type="email" id="reg-email" placeholder="correu@exemple.com">
+        </div>
+        <div class="form-grup">
+          <label for="reg-telefon">Telèfon (WhatsApp)</label>
+          <input type="tel" id="reg-telefon" placeholder="6XX XXX XXX" inputmode="tel">
+        </div>
+        <div class="form-grup">
+          <label for="reg-provincia">Província</label>
+          <select id="reg-provincia" onchange="carregaMunicipis()">
+            <option value="">Selecciona província...</option>
+            <option value="barcelona">Barcelona</option>
+            <option value="girona">Girona</option>
+            <option value="lleida">Lleida</option>
+            <option value="tarragona">Tarragona</option>
+          </select>
+        </div>
+        <div class="form-grup">
+          <label for="reg-municipi">Municipi</label>
+          <select id="reg-municipi" disabled>
+            <option value="">Primer selecciona la província</option>
+          </select>
+        </div>
+        <div class="form-grup">
+          <label for="reg-password">Contrasenya</label>
+          <input type="password" id="reg-password" placeholder="Mínim 8 caràcters">
+        </div>
+
+        <div style="font-size: 12px; color: var(--gris-text); margin-bottom: 14px; line-height: 1.6;">
+          <label style="display:flex; gap:8px; align-items:flex-start; font-weight:400; color:var(--gris-text);">
+            <input type="checkbox" id="reg-privacitat" style="width:auto; margin-top:2px;">
+            He llegit i accepto la <a href="/privacitat.html" target="_blank" style="color:var(--verd)">Política de Privacitat</a> i les <a href="/condicions.html" target="_blank" style="color:var(--verd)">Condicions d'Ús</a>
+          </label>
+        </div>
+
+        <button class="btn-primary" onclick="registraUsuari()">Crear compte</button>
+        <br><br>
+        <button class="btn-secondary" onclick="mostraVista('login')">Ja tinc compte</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BANNER PUBLICITAT -->
+  <div class="ads-banner" id="ads-banner" style="display:none">
+    <!-- Google AdSense Banner -->
+    <span style="color: var(--gris-text); font-size: 11px;">Publicitat</span>
+    <!--
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXX"
+         data-ad-slot="XXXXXXXXXX"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+  </div>
+
+  <!-- BARRA NAVEGACIÓ INFERIOR -->
+  <nav class="nav-bar" id="nav-bar" style="display:none">
+    <button class="nav-item actiu" id="nav-inici" onclick="mostraVista('inici')">
+      <span class="nav-icona">🏠</span>
+      Inici
+    </button>
+    <button class="nav-item" id="nav-ofereixo" onclick="mostraVista('ofereixo')">
+      <span class="nav-icona">📚</span>
+      Ofereixo
+    </button>
+    <button class="nav-item" id="nav-busco" onclick="mostraVista('busco')">
+      <span class="nav-icona">🔍</span>
+      Busco
+    </button>
+  </nav>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

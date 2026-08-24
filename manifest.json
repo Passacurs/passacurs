@@ -1,0 +1,23 @@
+{
+  "name": "Passacurs",
+  "short_name": "Passacurs",
+  "description": "Intercanvi gratuït de llibres escolars",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f5f0",
+  "theme_color": "#1D9E75",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icona.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icona.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
