@@ -1344,7 +1344,7 @@ async function obreWhatsApp() {
 
   const llistat = sel.map(c => '- ' + c.dataset.titol).join('\n');
   const tel = usuari.telefon.replace(/\D/g, '').replace(/^0034/, '34').replace(/^6/, '346').replace(/^346/, '346');
-  const msg = encodeURIComponent('Hola! T\'escric des de Passacurs.\n\nEstic interessat/da en aquests llibres:\n\n' + llistat + '\n\nPodrien quedar per recollir-los?\n— ' + (jo?.nom_usuari || '') + ' (' + (jo?.municipi || '') + ')');
+  const msg = encodeURIComponent('Hola! T\'escric des de Passacurs.\n\nEstic interessat/da en aquests llibres:\n\n' + llistat + '\n\nPodriem quedar per recollir-los?\n— ' + (jo?.nom_usuari || '') + ' (' + (jo?.municipi || '') + ')');
   window.open('https://wa.me/' + tel + '?text=' + msg, '_blank');
 }
 
