@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Passacurs</title>
+  <meta name="theme-color" content="#1D9E75">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icona.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { max-width: 100%; height: auto; display: block; }
+    :root {
+      --verd: #1D9E75; --verd-fosc: #0F6E56; --verd-clar: #E1F5EE;
+      --taronja: #E8621A; --taronja-clar: #FDF0E8;
+      --fons: #F5F5F0; --blanc: #FFFFFF; --vora: #E5E5E0;
+      --gris: #6B6B65; --text: #1A1A18; --r: 12px;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--fons); color: var(--text);
+      font-size: 16px; line-height: 1.5;
+      min-height: 100dvh; display: flex; flex-direction: column;
+      max-width: 480px; margin: 0 auto; overflow-x: hidden;
+    }
+    /* SPLASH */
+    #splash { position: fixed; inset: 0; z-index: 999; background: #f5f5f0; transition: opacity 0.4s; }
+    #splash img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    /* HEADER */
+    header { background: var(--verd); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; }
+    .logo img { width: 32px; height: 32px; object-fit: contain; border-radius: 8px; flex-shrink: 0; }
+    .logo span { font-size: 20px; font-weight: 700; }
+    .logo em { font-style: normal; opacity: 0.75; }
+    .header-dreta { display: flex; gap: 8px; }
+    .btn-icon { background: rgba(255,255,255,0.2); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; position: relative; }
+    .badge { position: absolute; top: -2px; right: -2px; background: var(--taronja); color: white; font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .btn-back { background: rgba(255,255,255,0.2); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; flex-shrink: 0; }
+    /* MAIN */
+    main { flex: 1; padding: 16px 16px 132px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+    .vista { display: none; flex-direction: column; gap: 14px; }
+    .vista.activa { display: flex; }
+    /* CARDS */
+    .card { background: var(--blanc); border-radius: var(--r); border: 1px solid var(--vora); padding: 16px; }
+    /* BOTONS GRANS */
+    .btn-accio { display: flex; align-items: center; gap: 14px; padding: 20px 16px; border-radius: var(--r); border: none; cursor: pointer; width: 100%; text-align: left; }
+    .btn-accio.ofereixo { background: var(--verd); color: white; }
+    .btn-accio.busco { background: var(--taronja); color: white; }
+    .btn-accio .ico { font-size: 36px; flex-shrink: 0; }
+    .btn-accio strong { display: block; font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+    .btn-accio span { font-size: 13px; opacity: 0.85; }
+    /* TÍTOLS */
+    .titol { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .subtitol { font-size: 13px; color: var(--gris); margin-bottom: 12px; }
+    /* FORMULARIS */
+    .grup { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    label { font-size: 13px; font-weight: 500; color: var(--gris); }
+    input, select { width: 100%; padding: 12px 14px; border: 1px solid var(--vora); border-radius: 10px; font-size: 16px; font-family: inherit; background: white; color: var(--text); outline: none; }
+    input:focus, select:focus { border-color: var(--verd); }
+    input[type="file"] { padding: 8px; font-size: 14px; }
+    input[type="checkbox"] { width: auto; }
+    /* BOTONS */
+    .btn-primary { background: var(--verd); color: white; border: none; border-radius: 10px; padding: 14px; width: 100%; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 4px; }
+    .btn-primary:active { background: var(--verd-fosc); }
+    .btn-secondary { background: white; color: var(--text); border: 1px solid var(--vora); border-radius: 10px; padding: 14px; width: 100%; font-size: 16px; cursor: pointer; margin-top: 8px; }
+    /* LEGAL */
+    .check-legal { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--gris); margin-bottom: 14px; line-height: 1.5; }
+    .check-legal a { color: var(--verd); }
+    /* PILLS */
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .pill.verd { background: var(--verd-clar); color: var(--verd-fosc); }
+    .pill.groc { background: #FFF8E0; color: #8A6800; }
+    .pill.vermell { background: #FDECEA; color: #c0392b; }
+    /* LLIBRES */
+    .llibre-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--vora); }
+    .llibre-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .llibre-portada { width: 52px; height: 70px; border-radius: 6px; object-fit: cover; background: var(--vora); flex-shrink: 0; }
+    .llibre-info { flex: 1; min-width: 0; }
+    .llibre-titol { font-size: 14px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .llibre-meta { font-size: 12px; color: var(--gris); margin-bottom: 5px; }
+    /* AVIS */
+    .avis { background: var(--verd-clar); border: 1px solid var(--verd); border-radius: var(--r); padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; }
+    .avis-ico { font-size: 22px; flex-shrink: 0; }
+    .avis strong { display: block; font-size: 14px; font-weight: 600; color: var(--verd-fosc); }
+    .avis span { font-size: 13px; color: var(--verd-fosc); }
+    .btn-avis { display: inline-block; margin-top: 8px; background: var(--verd); color: white; border: none; border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 500; cursor: pointer; }
+    /* ESTAT BUIT */
+    .buit { text-align: center; padding: 32px 16px; color: var(--gris); }
+    .buit .ico { font-size: 44px; margin-bottom: 10px; }
+    .buit p { font-size: 14px; }
+    /* ADS */
+    .ads { background: #F0F0EB; border-top: 1px solid var(--vora); min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gris); position: fixed; bottom: 56px; left: 0; right: 0; z-index: 99; max-width: 480px; margin: 0 auto; width: 100%; }
+    /* NAV */
+    nav { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid var(--vora); background: white; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; max-width: 480px; margin: 0 auto; width: 100%; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; padding: 10px 0 12px; gap: 3px; border: none; background: none; cursor: pointer; color: var(--gris); font-size: 11px; font-family: inherit; }
+    .nav-item.actiu { color: var(--verd); }
+    .nav-item .ico { font-size: 22px; }
+    /* MODAL */
+    .modal-fons { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.55); z-index: 9999; display: flex; align-items: flex-end; }
+    .modal-contingut { background: white; border-radius: 20px 20px 0 0; width: 100%; max-height: 85vh; display: flex; flex-direction: column; }
+    .modal-cap { padding: 16px 16px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--vora); flex-shrink: 0; }
+    .modal-cap h2 { font-size: 17px; font-weight: 700; margin: 0; }
+    .modal-tanca { background: var(--fons); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .modal-cos { padding: 16px; overflow-y: auto; flex: 1; font-size: 14px; line-height: 1.7; color: #3A3A38; }
+    .modal-cos h3 { font-size: 15px; font-weight: 600; margin: 20px 0 6px; color: #0F2D4A; }
+    .modal-cos h3:first-child { margin-top: 0; }
+    .modal-cos ul { padding-left: 18px; margin-bottom: 10px; }
+    .modal-cos li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash"><img src="pantalla inicial.png" alt="Passacurs"></div>
+
+<!-- HEADER -->
+<header id="header" style="display:none">
+  <button class="btn-back" id="btn-back" style="display:none" onclick="navegaEnrere()">←</button>
+  <div class="logo" onclick="nav('inici')" id="header-logo">
+    <img src="icona.png" alt="Passacurs">
+    <span>Passa<em>curs</em></span>
+  </div>
+  <div id="header-titol" style="display:none;color:white;font-size:17px;font-weight:600;flex:1;text-align:center"></div>
+  <div class="header-dreta" id="header-dreta">
+    <button class="btn-icon" onclick="nav('avisos')" aria-label="Avisos">🔔<span class="badge" id="badge" style="display:none">0</span></button>
+    <button class="btn-icon" onclick="nav('perfil')" aria-label="Perfil">👤</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main id="main" style="display:none">
+
+  <!-- INICI -->
+  <div id="vista-inici" class="vista">
+    <div class="avis" id="avis-banner" style="display:none">
+      <div class="avis-ico">📗</div>
+      <div><strong>Nova coincidencia!</strong><span id="avis-text"></span><button class="btn-avis" onclick="nav('busco')">Veure</button></div>
+    </div>
+    <button class="btn-accio ofereixo" onclick="nav('ofereixo')">
+      <span class="ico">📚</span>
+      <div><strong>Ofereixo llibres</strong><span>Penja els llibres que ja no necessites</span></div>
+    </button>
+    <button class="btn-accio busco" onclick="nav('busco')">
+      <span class="ico">🔍</span>
+      <div><strong>Busco llibres</strong><span>Troba els llibres que necessites</span></div>
+    </button>
+    <!-- M'INTERESSEN -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <p class="titol" style="margin:0">❤️ M'interessen</p>
+        <span id="interessen-count" style="font-size:12px;color:var(--gris)"></span>
+      </div>
+      <div id="interessen-resum"><div class="buit"><div class="ico">🔍</div><p>Quan trobes un llibre que vols, prem ♡ per guardar-lo aqui</p></div></div>
+    </div>
+
+    <!-- ELS MEUS LLIBRES -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <p class="titol" style="margin:0">Els meus llibres</p>
+        <button onclick="nav('ofereixo')" style="background:none;border:none;color:var(--verd);font-size:13px;font-weight:600;cursor:pointer">+ Afegir</button>
+      </div>
+      <div id="meus-llibres"><div class="buit"><div class="ico">📭</div><p>Encara no has publicat cap llibre</p></div></div>
+    </div>
+
+    <!-- ESTIC BUSCANT -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <p class="titol" style="margin:0">Estic buscant</p>
+        <button onclick="nav('busco')" style="background:none;border:none;color:var(--taronja);font-size:13px;font-weight:600;cursor:pointer">+ Afegir</button>
+      </div>
+      <div id="busco-resum"><div class="buit"><div class="ico">🔎</div><p>Encara no busques cap llibre</p></div></div>
+    </div>
+  </div>
+
+  <!-- OFEREIXO -->
+  <div id="vista-ofereixo" class="vista">
+    <p class="titol">Afegeix un llibre</p>
+    <div class="card">
+      <p class="subtitol">Introdueix les dades del llibre</p>
+      <div class="grup">
+        <label>ISBN <span style="color:#c0392b">*</span></label>
+        <input type="text" id="of-isbn" placeholder="9788430770..." inputmode="numeric" oninput="this.value=netejaISBN(this.value);cercaISBNExistent(this.value,'of')">
+        <span id="of-isbn-feedback" style="font-size:12px;margin-top:4px;display:none"></span>
+      </div>
+      <div class="grup"><label>Títol <span style="color:#c0392b">*</span></label><input type="text" id="of-titol" placeholder="Matematiques 2n ESO"></div>
+      <div class="grup">
+        <label>Editorial <span style="color:#c0392b">*</span></label>
+        <select id="of-editorial">
+          <option value="">Selecciona editorial...</option>
+          <option>Vicens Vives</option><option>Santillana</option><option>SM</option><option>Anaya</option>
+          <option>Teide</option><option>Barcanova</option><option>Castellnou</option><option>Edebe</option>
+          <option>Bromera</option><option>Oxford University Press</option><option>Cambridge University Press</option>
+          <option>Burlington Books</option><option>Pearson</option><option>McGraw-Hill</option><option>Altres</option>
+        </select>
+      </div>
+      <div class="grup">
+        <label>Curs <span style="color:#c0392b">*</span></label>
+        <select id="of-curs" onchange="carregaMateriesFormulari('of-materia')"><option value="">Selecciona curs...</option></select>
+      </div>
+      <div class="grup">
+        <label>Materia <span style="color:#c0392b">*</span></label>
+        <select id="of-materia" onchange="mostraAltraMateria('of')"><option value="">Selecciona materia...</option></select>
+        <div id="of-altra-div" style="display:none;margin-top:8px">
+          <input type="text" id="of-altra-materia" placeholder="Escriu el nom de la materia...">
+        </div>
+      </div>
+      <div class="grup">
+        <label>Estat de l'exemplar <span style="color:#c0392b">*</span></label>
+        <select id="of-estat">
+          <option value="">Selecciona estat...</option>
+          <option value="nou">Nou - sense usar</option>
+          <option value="com_nou">Com nou - perfecte estat</option>
+          <option value="bo">Bo - alguna marca pero complet</option>
+          <option value="acceptable">Acceptable - usat pero llegible</option>
+          <option value="molt_usat">Molt usat - marcat i subratllat</option>
+        </select>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--vora);margin:4px 0 14px">
+      <p style="font-size:14px;font-weight:600;margin-bottom:10px">📷 Fotos de l'exemplar</p>
+      <div class="grup">
+        <label>Foto de la portada</label>
+        <div id="of-preview-portada" style="display:none;margin-bottom:8px">
+          <img id="of-img-portada" style="width:70px;height:95px;object-fit:cover;border-radius:6px;border:1px solid var(--vora)">
+          <button onclick="eliminaFoto('of','portada')" style="background:none;border:none;color:#c0392b;font-size:12px;cursor:pointer;margin-top:4px">Eliminar foto</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0" onclick="obreFoto('of','portada','camera')">📷 Fer foto</button>
+          <button type="button" class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0" onclick="obreFoto('of','portada','gallery')">🖼️ Galeria</button>
+        </div>
+        <input type="file" id="of-foto-portada" accept="image/*" style="display:none" onchange="previsualitzaFoto('of','portada',this)">
+      </div>
+      <div class="grup">
+        <label>Foto de la pagina 113</label>
+        <p style="font-size:12px;color:var(--gris);margin-bottom:6px">Permet verificar l'estat real del llibre.</p>
+        <div id="of-preview-p113" style="display:none;margin-bottom:8px">
+          <img id="of-img-p113" style="width:70px;height:95px;object-fit:cover;border-radius:6px;border:1px solid var(--vora)">
+          <button onclick="eliminaFoto('of','p113')" style="background:none;border:none;color:#c0392b;font-size:12px;cursor:pointer;margin-top:4px">Eliminar foto</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0" onclick="obreFoto('of','p113','camera')">📷 Fer foto</button>
+          <button type="button" class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0" onclick="obreFoto('of','p113','gallery')">🖼️ Galeria</button>
+        </div>
+        <input type="file" id="of-foto-p113" accept="image/*" style="display:none" onchange="previsualitzaFoto('of','p113',this)">
+      </div>
+      <div id="of-error" style="font-size:13px;margin-bottom:8px;display:none"></div>
+      <div id="of-progress" style="font-size:13px;color:var(--gris);margin-bottom:8px;display:none"></div>
+      <button class="btn-primary" onclick="publicaLlibre()" id="btn-publicar">Publicar llibre</button>
+      <button class="btn-secondary" onclick="netejFormulariOferta()">Netejar formulari</button>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <p class="titol" style="margin:0">Els meus llibres</p>
+      </div>
+      <div id="meus-llibres-ofereixo"><div class="buit"><div class="ico">📭</div><p>Encara no has publicat cap llibre</p></div></div>
+    </div>
+  </div>
+
+  <!-- EDITAR LLIBRE -->
+  <div id="vista-editar-llibre" class="vista">
+    <p class="titol">Editar llibre</p>
+    <div class="card">
+      <div class="grup">
+        <label>ISBN <span style="color:#c0392b">*</span></label>
+        <input type="text" id="ed-isbn" placeholder="9788430770..." inputmode="numeric" oninput="this.value=netejaISBN(this.value);cercaISBNExistent(this.value,'ed')">
+        <span id="ed-isbn-feedback" style="font-size:12px;margin-top:4px;display:none"></span>
+      </div>
+      <div class="grup"><label>Titol <span style="color:#c0392b">*</span></label><input type="text" id="ed-titol"></div>
+      <div class="grup">
+        <label>Editorial <span style="color:#c0392b">*</span></label>
+        <select id="ed-editorial">
+          <option value="">Selecciona editorial...</option>
+          <option>Vicens Vives</option><option>Santillana</option><option>SM</option><option>Anaya</option>
+          <option>Teide</option><option>Barcanova</option><option>Castellnou</option><option>Edebe</option>
+          <option>Bromera</option><option>Oxford University Press</option><option>Cambridge University Press</option>
+          <option>Burlington Books</option><option>Pearson</option><option>McGraw-Hill</option><option>Altres</option>
+        </select>
+      </div>
+      <div class="grup">
+        <label>Curs <span style="color:#c0392b">*</span></label>
+        <select id="ed-curs" onchange="carregaMateriesFormulari('ed-materia')"><option value="">Selecciona curs...</option></select>
+      </div>
+      <div class="grup">
+        <label>Materia <span style="color:#c0392b">*</span></label>
+        <select id="ed-materia" onchange="mostraAltraMateria('ed')"><option value="">Selecciona materia...</option></select>
+        <div id="ed-altra-div" style="display:none;margin-top:8px">
+          <input type="text" id="ed-altra-materia" placeholder="Escriu el nom de la materia...">
+        </div>
+      </div>
+      <div class="grup">
+        <label>Estat de l'exemplar <span style="color:#c0392b">*</span></label>
+        <select id="ed-estat">
+          <option value="">Selecciona estat...</option>
+          <option value="nou">Nou - sense usar</option>
+          <option value="com_nou">Com nou - perfecte estat</option>
+          <option value="bo">Bo - alguna marca pero complet</option>
+          <option value="acceptable">Acceptable - usat pero llegible</option>
+          <option value="molt_usat">Molt usat - marcat i subratllat</option>
+        </select>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--vora);margin:4px 0 14px">
+      <p style="font-size:14px;font-weight:600;margin-bottom:10px">📷 Fotos</p>
+      <div class="grup">
+        <label>Foto portada</label>
+        <div id="ed-preview-portada" style="margin-bottom:8px">
+          <img id="ed-img-portada" style="width:70px;height:95px;object-fit:cover;border-radius:6px;border:1px solid var(--vora)">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0" onclick="obreFoto('ed','portada','camera')">📷 Fer foto</button>
+          <button type="button" class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0" onclick="obreFoto('ed','portada','gallery')">🖼️ Galeria</button>
+        </div>
+        <input type="file" id="ed-foto-portada" accept="image/*" style="display:none" onchange="previsualitzaFoto('ed','portada',this)">
+      </div>
+      <div class="grup">
+        <label>Foto pagina 113</label>
+        <div id="ed-preview-p113" style="margin-bottom:8px">
+          <img id="ed-img-p113" style="width:70px;height:95px;object-fit:cover;border-radius:6px;border:1px solid var(--vora)">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0" onclick="obreFoto('ed','p113','camera')">📷 Fer foto</button>
+          <button type="button" class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0" onclick="obreFoto('ed','p113','gallery')">🖼️ Galeria</button>
+        </div>
+        <input type="file" id="ed-foto-p113" accept="image/*" style="display:none" onchange="previsualitzaFoto('ed','p113',this)">
+      </div>
+      <div id="ed-error" style="font-size:13px;margin-bottom:8px;display:none"></div>
+      <div id="ed-progress" style="font-size:13px;color:var(--gris);margin-bottom:8px;display:none"></div>
+      <button class="btn-primary" onclick="guardaEdicio()" id="btn-guardar">Guardar canvis</button>
+    </div>
+  </div>
+
+  <!-- BUSCO -->
+  <div id="vista-busco" class="vista">
+    <p class="titol">Busca llibres</p>
+
+    <!-- MODE 1: Cerca per ISBN -->
+    <div class="card">
+      <p class="titol" style="margin-bottom:4px">Per ISBN</p>
+      <p class="subtitol">Introdueix l'ISBN i el cercarem al cataleg</p>
+      <div class="grup">
+        <label>ISBN</label>
+        <input type="text" id="busco-isbn" placeholder="9788430770..." inputmode="numeric"
+          oninput="this.value=netejaISBN(this.value);cercaISBNAlCataleg(this.value)">
+      </div>
+      <!-- Resultat del catàleg per ISBN -->
+      <div id="cataleg-isbn-resultat" style="display:none">
+        <div style="background:var(--fons);border-radius:10px;padding:12px;margin-bottom:12px">
+          <p style="font-weight:600;font-size:14px;margin-bottom:2px" id="cataleg-isbn-titol"></p>
+          <p style="font-size:12px;color:var(--gris)" id="cataleg-isbn-meta"></p>
+        </div>
+        <button class="btn-primary" onclick="afegeixCercaDesCataleg()">+ Afegir a les meves cerques</button>
+      </div>
+      <div id="cataleg-isbn-nou" style="display:none">
+        <p style="font-size:13px;color:var(--gris);margin-bottom:8px">ISBN no trobat al cataleg. Introdueix les dades manualment:</p>
+      </div>
+    </div>
+
+    <!-- MODE 2: Cerca per curs + materia -->
+    <div class="card">
+      <p class="titol" style="margin-bottom:4px">Per curs i materia</p>
+      <p class="subtitol">Busca al cataleg per curs i materia</p>
+      <div class="grup">
+        <label>Curs</label>
+        <select id="cerca-curs" onchange="carregaMateriesDeCataleg()">
+          <option value="">Selecciona curs...</option>
+        </select>
+      </div>
+      <div class="grup">
+        <label>Materia</label>
+        <select id="cerca-materia">
+          <option value="">Totes les materies d'aquest curs</option>
+        </select>
+      </div>
+      <button class="btn-primary" style="background:var(--taronja)" onclick="cercaAlCatalegPerCurs()">Cercar al cataleg</button>
+      <!-- Resultats del catàleg per curs/materia -->
+      <div id="cataleg-curs-resultats" style="display:none;margin-top:14px">
+        <p style="font-size:13px;font-weight:600;margin-bottom:8px">Selecciona el llibre que vols:</p>
+        <div id="cataleg-curs-llista"></div>
+      </div>
+    </div>
+
+    <!-- MODE 3: Manual (si no troba res) -->
+    <div class="card" id="card-manual" style="display:none">
+      <p class="titol" style="margin-bottom:4px">Afegir manualment</p>
+      <p class="subtitol">No hem trobat el llibre al cataleg. Introdueix les dades:</p>
+      <div class="grup">
+        <label>ISBN</label>
+        <input type="text" id="manual-isbn" inputmode="numeric" oninput="this.value=netejaISBN(this.value)" placeholder="9788430770...">
+      </div>
+      <div class="grup"><label>Titol <span style="color:#c0392b">*</span></label><input type="text" id="manual-titol" placeholder="Matematiques 2n ESO"></div>
+      <div class="grup">
+        <label>Editorial</label>
+        <select id="manual-editorial">
+          <option value="">Selecciona editorial...</option>
+          <option>Vicens Vives</option><option>Santillana</option><option>SM</option><option>Anaya</option>
+          <option>Teide</option><option>Barcanova</option><option>Castellnou</option><option>Edebe</option>
+          <option>Bromera</option><option>Oxford University Press</option><option>Cambridge University Press</option>
+          <option>Burlington Books</option><option>Pearson</option><option>McGraw-Hill</option><option>Altres</option>
+        </select>
+      </div>
+      <div class="grup">
+        <label>Curs</label>
+        <select id="manual-curs" onchange="carregaMateriesFormulari('manual-materia')"><option value="">Selecciona curs...</option></select>
+      </div>
+      <div class="grup">
+        <label>Materia</label>
+        <select id="manual-materia"><option value="">Selecciona materia...</option></select>
+      </div>
+      <div id="manual-error" style="color:#c0392b;font-size:13px;margin-bottom:8px;display:none"></div>
+      <button class="btn-primary" onclick="afegeixCercaManual()">+ Afegir a les meves cerques</button>
+      <button class="btn-secondary" onclick="document.getElementById('card-manual').style.display='none'">Cancel·lar</button>
+    </div>
+
+    <!-- La meva llista de cerques -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <p class="titol" style="margin:0">La meva llista de cerques</p>
+        <span id="busco-count" style="font-size:12px;color:var(--gris)"></span>
+      </div>
+      <div id="llista-busco-persistent">
+        <div class="buit"><div class="ico">🔎</div><p>Encara no has afegit cap llibre a la teva llista</p></div>
+      </div>
+    </div>
+
+    <!-- Resultats d'ofertes -->
+    <div id="resultats-busco" style="display:none">
+      <p class="titol">Resultats</p>
+      <div id="llista-resultats"></div>
+    </div>
+  </div>
+
+  <!-- PERFIL OFERIDOR -->
+  <div id="vista-perfil-oferidor" class="vista">
+    <div><p class="titol" id="oferidor-nom">—</p><p class="subtitol" id="oferidor-muni">—</p></div>
+    <div class="card">
+      <p style="font-size:14px;font-weight:600;margin-bottom:12px">Marca els que t'interessen:</p>
+      <div id="oferidor-llibres"></div>
+    </div>
+    <button class="btn-primary" onclick="obreWhatsApp()">💬 Contactar per WhatsApp</button>
+    <button class="btn-secondary" onclick="navegaEnrere()">← Tornar</button>
+  </div>
+
+  <!-- AVISOS -->
+  <div id="vista-avisos" class="vista">
+    <p class="titol">Avisos</p>
+    <div id="llista-avisos"><div class="buit"><div class="ico">🔔</div><p>No tens cap avis nou</p></div></div>
+  </div>
+
+  <!-- PERFIL -->
+  <div id="vista-perfil" class="vista">
+    <p class="titol">El meu perfil</p>
+    <div class="card">
+      <div class="grup"><label>Nom d'usuari</label><input type="text" id="p-nom"></div>
+      <div class="grup">
+        <label>Telefon (WhatsApp)</label>
+        <input type="tel" id="p-tel" placeholder="6XX XXX XXX">
+        <span style="font-size:12px;color:var(--gris);margin-top:4px">🔒 Nomes visible al primer de la cua dels teus llibres.</span>
+      </div>
+      <div class="grup">
+        <label>Provincia</label>
+        <select id="p-prov" onchange="carregaMunicipisPerfil()">
+          <option value="">Selecciona provincia...</option>
+          <option value="barcelona">Barcelona</option><option value="girona">Girona</option>
+          <option value="lleida">Lleida</option><option value="tarragona">Tarragona</option>
+        </select>
+      </div>
+      <div class="grup"><label>Municipi</label><select id="p-muni" disabled><option value="">Primer selecciona la provincia</option></select></div>
+      <div id="p-error" style="color:#c0392b;font-size:13px;margin-bottom:8px;display:none"></div>
+      <div id="p-ok" style="color:#1D9E75;font-size:13px;margin-bottom:8px;display:none">Perfil actualitzat correctament</div>
+      <button class="btn-primary" onclick="guardaPerfil()">Guardar canvis</button>
+    </div>
+    <div class="card"><button class="btn-secondary" onclick="tancaSessio()">Tancar sessio</button></div>
+    <div class="card">
+      <button class="btn-secondary" style="color:#c0392b;border-color:#e74c3c" onclick="document.getElementById('modal-esborrar').style.display='flex'">🗑️ Esborrar el meu compte</button>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="vista-login" class="vista">
+    <div style="text-align:center;padding:24px 0 8px">
+      <img src="icona.png" alt="Passacurs" style="width:80px;height:80px;object-fit:contain;border-radius:18px;margin:0 auto 12px">
+      <p class="titol">Benvingut a Passacurs</p>
+      <p class="subtitol">Intercanvi gratuit de llibres escolars</p>
+    </div>
+    <div class="card">
+      <div class="grup"><label>Correu electronic</label><input type="email" id="l-email" placeholder="correu@exemple.com"></div>
+      <div class="grup"><label>Contrasenya</label><input type="password" id="l-pass" placeholder="••••••••"></div>
+      <div id="l-error" style="color:#c0392b;font-size:13px;margin-bottom:8px;display:none"></div>
+      <button class="btn-primary" onclick="login()">Entra</button>
+      <button class="btn-secondary" onclick="nav('registre')">No tinc compte</button>
+    </div>
+  </div>
+
+  <!-- REGISTRE -->
+  <div id="vista-registre" class="vista">
+    <p class="titol">Crea el teu compte</p>
+    <div class="card">
+      <div class="grup"><label>Nom d'usuari</label><input type="text" id="r-nom" placeholder="ex: la_maria_bcn"></div>
+      <div class="grup"><label>Correu electronic</label><input type="email" id="r-email" placeholder="correu@exemple.com"></div>
+      <div class="grup">
+        <label>Telefon (WhatsApp)</label>
+        <input type="tel" id="r-tel" placeholder="6XX XXX XXX">
+        <span style="font-size:12px;color:var(--gris);margin-top:4px">🔒 No es public. Nomes el rebra el primer de la cua dels teus llibres.</span>
+      </div>
+      <div class="grup">
+        <label>Provincia</label>
+        <select id="r-prov" onchange="carregaMunicipis()">
+          <option value="">Selecciona provincia...</option>
+          <option value="barcelona">Barcelona</option><option value="girona">Girona</option>
+          <option value="lleida">Lleida</option><option value="tarragona">Tarragona</option>
+        </select>
+      </div>
+      <div class="grup"><label>Municipi</label><select id="r-muni" disabled><option value="">Primer selecciona la provincia</option></select></div>
+      <div class="grup"><label>Contrasenya</label><input type="password" id="r-pass" placeholder="Minim 8 caracters"></div>
+      <div class="check-legal">
+        <input type="checkbox" id="r-legal">
+        <span>He llegit i accepto la
+          <button type="button" onclick="obreModal('privacitat')" style="background:none;border:none;color:var(--verd);font-size:13px;cursor:pointer;padding:0;text-decoration:underline">Politica de Privacitat</button>
+          i les
+          <button type="button" onclick="obreModal('condicions')" style="background:none;border:none;color:var(--verd);font-size:13px;cursor:pointer;padding:0;text-decoration:underline">Condicions d'Us</button>
+        </span>
+      </div>
+      <div id="r-error" style="color:#c0392b;font-size:13px;margin-bottom:8px;display:none"></div>
+      <button class="btn-primary" onclick="registre()">Crear compte</button>
+      <button class="btn-secondary" onclick="nav('login')">Ja tinc compte, entrar</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- ADS -->
+<div class="ads" id="ads" style="display:none"><span>Publicitat</span></div>
+
+<!-- NAV -->
+<nav id="nav" style="display:none">
+  <button class="nav-item actiu" id="nav-inici" onclick="nav('inici')"><span class="ico">🏠</span>Inici</button>
+  <button class="nav-item" id="nav-ofereixo" onclick="nav('ofereixo')"><span class="ico">📚</span>Ofereixo</button>
+  <button class="nav-item" id="nav-busco" onclick="nav('busco')"><span class="ico">🔍</span>Busco</button>
+</nav>
+
+<!-- MODAL ESBORRAR COMPTE -->
+<div class="modal-fons" id="modal-esborrar" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-contingut">
+    <div class="modal-cap"><h2 style="color:#c0392b">Esborrar compte</h2><button class="modal-tanca" onclick="document.getElementById('modal-esborrar').style.display='none'">✕</button></div>
+    <div class="modal-cos">
+      <p style="margin-bottom:20px">Segur que vols esborrar el teu compte? Aquesta accio es irreversible i s'eliminaran totes les teves dades i publicacions.</p>
+      <button class="btn-primary" style="background:#c0392b;margin-bottom:10px" onclick="esborrraCompte()">Si, esborrar el meu compte</button>
+      <button class="btn-secondary" onclick="document.getElementById('modal-esborrar').style.display='none'">Cancel·lar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLS LLIBRE -->
+<div class="modal-fons" id="modal-detalls" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-contingut" style="max-height:90vh">
+    <div class="modal-cap">
+      <h2>Detalls del llibre</h2>
+      <button class="modal-tanca" onclick="document.getElementById('modal-detalls').style.display='none'">✕</button>
+    </div>
+    <div class="modal-cos" id="detalls-cos" style="padding:0"></div>
+  </div>
+</div>
+
+<!-- MODAL LEGAL -->
+<div class="modal-fons" id="modal-legal" style="display:none" onclick="if(event.target===this)tancaModal()">
+  <div class="modal-contingut">
+    <div class="modal-cap"><h2 id="modal-titol">—</h2><button class="modal-tanca" onclick="tancaModal()">✕</button></div>
+    <div class="modal-cos" id="modal-cos"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============================================
+// CONFIG
+// ============================================
+const SUPABASE_URL = 'https://dbjdacaznaijlghmahws.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRiamRhY2F6bmFpamxnaG1haHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NDcxMDgsImV4cCI6MjEwMzEyMzEwOH0.oxXf-eR6_J4pZ6zpXTSPRH1p5wX5I6hXnTNtN3N3ZYM';
+const CLOUDINARY_CLOUD = 'f9goai7z';
+const CLOUDINARY_PRESET = 'passacurs';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ============================================
+// MATERIES PER CURS (dinàmic)
+// ============================================
+const MATERIES = {
+  ESO: {
+    buit: 'Selecciona materia...',
+    grups: [
+      { label: 'Llengua',  opcions: ['Llengua Catalana','Llengua Castellana','Angles','Frances','Alemany'] },
+      { label: 'Ciencies', opcions: ['Matematiques','Fisica i Quimica','Biologia i Geologia','Ciencies Naturals','Tecnologia','Informatica'] },
+      { label: 'Socials',  opcions: ['Historia','Geografia','Historia de l\'Art','Economia','Filosofia'] },
+      { label: 'Altres',   opcions: ['Educacio Fisica','Musica','Arts Plastiques','Religio','Altres'] }
+    ]
+  },
+  Primaria: {
+    buit: 'Selecciona materia...',
+    grups: [
+      { label: 'Llengua',  opcions: ['Llengua Catalana','Llengua Castellana','Angles','Frances','Alemany'] },
+      { label: 'Ciencies', opcions: ['Matematiques','Ciencies Naturals','Tecnologia'] },
+      { label: 'Socials',  opcions: ['Coneixement del Medi','Historia','Geografia'] },
+      { label: 'Altres',   opcions: ['Educacio Fisica','Musica','Arts Plastiques','Religio','Altres'] }
+    ]
+  },
+  Cicles: {
+    buit: 'Selecciona familia professional...',
+    grups: [
+      { label: 'Families professionals', opcions: [
+        'Administracio i Gestio',
+        'Sanitat',
+        'Informatica i Comunicacions',
+        'Electricitat i Electronica',
+        'Automocio i Manteniment de Vehicles',
+        'Comerc i Marketing',
+        'Hostaleria i Turisme',
+        'Imatge Personal',
+        'Cuina i Gastronomia',
+        'Edificacio i Obra Civil',
+        'Fabricacio Mecanica',
+        'Activitats Agraries',
+        'Serveis Socioculturals i a la Comunitat',
+        'Arts Grafiques',
+        'Quimica',
+        'Textil, Confeccio i Pell',
+        'Fusta, Moble i Suro',
+        'Imatge i So',
+        'Transport i Manteniment de Vehicles',
+        'Seguretat i Medi Ambient',
+        'Formacio i Orientacio Laboral',
+        'Altres'
+      ]}
+    ]
+  }
+};
+
+function tipusCurs(curs) {
+  if (!curs) return 'ESO';
+  if (curs.includes('Primaria')) return 'Primaria';
+  if (curs === 'CFGM' || curs === 'CFGS') return 'Cicles';
+  return 'ESO'; // ESO i Batxillerat comparteixen matèries
+}
+
+function actualitzaMateries(prefix) {
+  const cursEl   = document.getElementById(prefix + '-curs');
+  const materiaEl = document.getElementById(prefix + '-materia');
+  if (!cursEl || !materiaEl) return;
+
+  const tipus = tipusCurs(cursEl.value);
+  const config = MATERIES[tipus];
+  const valorActual = materiaEl.value;
+
+  // Primera opció (buida)
+  const esCerca = (prefix === 'cerca');
+  const textBuit = esCerca ? 'Totes les materies' : config.buit;
+
+  let html = `<option value="">${textBuit}</option>`;
+  for (const grup of config.grups) {
+    html += `<optgroup label="${grup.label}">`;
+    for (const o of grup.opcions) {
+      html += `<option${o === valorActual ? ' selected' : ''}>${o}</option>`;
+    }
+    html += '</optgroup>';
+  }
+  materiaEl.innerHTML = html;
+}
+
+// Inicialitzar els selects de matèria quan es carrega la pàgina
+document.addEventListener('DOMContentLoaded', () => {
+  ['of','ed','cerca'].forEach(p => actualitzaMateries(p));
+});
+
+let usuariActual = null;
+let llibreEditantId = null;
+let _isbnTimer = null;
+
+// ============================================
+// INICIALITZACIÓ
+// ============================================
+window.addEventListener('load', async () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())).catch(() => {});
+  }
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      const { data: perfil } = await sb.from('usuaris').select('id').eq('id', session.user.id).maybeSingle();
+      usuariActual = perfil ? session.user : null;
+      if (!perfil) await sb.auth.signOut();
+    }
+  } catch(e) { usuariActual = null; }
+
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.style.opacity = '0';
+    setTimeout(() => { splash.style.display = 'none'; mostraUI(!!usuariActual); }, 400);
+  }, 2000);
+});
+
+function mostraUI(logat) {
+  document.getElementById('header').style.display = '';
+  document.getElementById('main').style.display = '';
+  document.getElementById('ads').style.display = '';
+  document.getElementById('nav').style.display = logat ? 'grid' : 'none';
+  if (logat) { nav('inici'); carregaAvisos(); carregaMeusLlibres(); carregaBuscoResum(); carregaInteressen(); carregaCursosFormularis(); }
+  else nav('login');
+}
+
+// ============================================
+// NAVEGACIÓ
+// ============================================
+const VISTES_PRINCIPALS = ['inici', 'busco', 'login', 'registre'];
+const TITOLS_VISTES = { 'perfil': 'El meu perfil', 'avisos': 'Avisos', 'perfil-oferidor': 'Contactar', 'ofereixo': 'Afegeix un llibre', 'editar-llibre': 'Editar llibre' };
+const _historial = [];
+
+function nav(id) {
+  document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
+  document.getElementById('vista-' + id)?.classList.add('activa');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('actiu'));
+  document.getElementById('nav-' + id)?.classList.add('actiu');
+  document.getElementById('main').scrollTo(0, 0);
+
+  const esPrincipal = VISTES_PRINCIPALS.includes(id);
+  const btnBack = document.getElementById('btn-back');
+  const headerLogo = document.getElementById('header-logo');
+  const headerTitol = document.getElementById('header-titol');
+  const headerDreta = document.getElementById('header-dreta');
+
+  if (esPrincipal) {
+    btnBack.style.display = 'none';
+    headerLogo.style.display = '';
+    headerTitol.style.display = 'none';
+    headerDreta.style.display = '';
+    _historial.length = 0;
+  } else {
+    btnBack.style.display = '';
+    headerLogo.style.display = 'none';
+    headerTitol.style.display = '';
+    headerTitol.textContent = TITOLS_VISTES[id] || '';
+    headerDreta.style.display = 'none';
+    _historial.push(id);
+  }
+
+  if (id === 'perfil') carregaPerfil();
+  if (id === 'editar-llibre') carregaCursosFormularis();
+  if (id === 'ofereixo') { carregaMeusLlibres(); carregaCursosFormularis(); }
+  if (id === 'inici') { carregaMeusLlibres(); carregaBuscoResum(); carregaInteressen(); }
+  if (id === 'busco') { carregaBuscoResum(); carregaCursosDelCataleg(); carregaMateriesDeCataleg(); }
+}
+
+function navegaEnrere() {
+  _historial.pop();
+  const anterior = _historial.length > 0 ? _historial.pop() : 'inici';
+  nav(anterior);
+}
+
+// ============================================
+// AUTH
+// ============================================
+async function login() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  const err = document.getElementById('l-error');
+  err.style.display = 'none';
+  if (!email || !pass) { err.textContent = 'Omple tots els camps'; err.style.display = ''; return; }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (error) { err.textContent = 'Cap usuari amb aquest correu o contrasenya incorrecta'; err.style.display = ''; return; }
+  usuariActual = data.user;
+  mostraUI(true);
+}
+
+async function registre() {
+  const nom = document.getElementById('r-nom').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const tel = document.getElementById('r-tel').value.trim();
+  const prov = document.getElementById('r-prov').value;
+  const muni = document.getElementById('r-muni').value;
+  const pass = document.getElementById('r-pass').value;
+  const legal = document.getElementById('r-legal').checked;
+  const err = document.getElementById('r-error');
+  const btn = document.querySelector('#vista-registre .btn-primary');
+  err.style.display = 'none';
+
+  if (!nom) { err.textContent = 'El nom d\'usuari es obligatori'; err.style.display = ''; return; }
+  if (!email) { err.textContent = 'El correu es obligatori'; err.style.display = ''; return; }
+  if (!tel) { err.textContent = 'El telefon es obligatori'; err.style.display = ''; return; }
+  if (!prov) { err.textContent = 'Selecciona la provincia'; err.style.display = ''; return; }
+  if (!muni) { err.textContent = 'Selecciona el municipi'; err.style.display = ''; return; }
+  if (pass.length < 8) { err.textContent = 'La contrasenya ha de tenir minim 8 caracters'; err.style.display = ''; return; }
+  if (!legal) { err.textContent = 'Has d\'acceptar la Politica de Privacitat'; err.style.display = ''; return; }
+
+  btn.textContent = 'Creant compte...';
+  btn.disabled = true;
+
+  try {
+    const { error: signUpError } = await sb.auth.signUp({
+      email, password: pass,
+      options: { data: { nom_usuari: nom, telefon: tel, municipi: muni, provincia: prov } }
+    });
+    if (signUpError) {
+      err.textContent = signUpError.message.includes('already registered') ? 'Aquest correu ja te un compte.' : 'Error: ' + signUpError.message;
+      err.style.display = '';
+      btn.textContent = 'Crear compte'; btn.disabled = false;
+      return;
+    }
+    const { data: loginData, error: loginError } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (loginError) { err.textContent = 'Compte creat. Prova d\'entrar.'; err.style.display = ''; nav('login'); btn.textContent = 'Crear compte'; btn.disabled = false; return; }
+    usuariActual = loginData.user;
+    mostraUI(true);
+  } catch(e) { err.textContent = 'Error inesperat: ' + e.message; err.style.display = ''; }
+  btn.textContent = 'Crear compte'; btn.disabled = false;
+}
+
+async function tancaSessio() {
+  await sb.auth.signOut();
+  usuariActual = null;
+  mostraUI(false);
+}
+
+async function esborrraCompte() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    await fetch('https://dbjdacaznaijlghmahws.supabase.co/functions/v1/delete-user', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + session.access_token, 'Content-Type': 'application/json' }
+    });
+  } catch(e) {
+    await sb.from('llibres').delete().eq('usuari_id', usuariActual.id);
+    await sb.from('usuaris').delete().eq('id', usuariActual.id);
+  }
+  await sb.auth.signOut();
+  usuariActual = null;
+  document.getElementById('modal-esborrar').style.display = 'none';
+  mostraUI(false);
+}
+
+// ============================================
+// MUNICIPIS
+// ============================================
+const CODIS_PROVINCIA = { barcelona: '08', girona: '17', lleida: '25', tarragona: '43' };
+let _municipisCache = null;
+
+async function carregaMunicipis() {
+  await _carregaMunicipisACamp('r-prov', 'r-muni');
+}
+async function carregaMunicipisPerfil() {
+  await _carregaMunicipisACamp('p-prov', 'p-muni');
+}
+async function _carregaMunicipisACamp(idProv, idMuni) {
+  const prov = document.getElementById(idProv).value;
+  const sel = document.getElementById(idMuni);
+  sel.innerHTML = '<option value="">Carregant...</option>';
+  sel.disabled = true;
+  if (!prov) { sel.innerHTML = '<option value="">Primer selecciona la provincia</option>'; return; }
+  try {
+    if (!_municipisCache) {
+      const r = await fetch('https://raw.githubusercontent.com/codeforspain/ds-organizacion-administrativa/master/data/municipios.json');
+      _municipisCache = await r.json();
+    }
+    const municipis = _municipisCache.filter(m => m.provincia_id === CODIS_PROVINCIA[prov]).map(m => m.nombre).sort((a, b) => a.localeCompare(b, 'ca'));
+    sel.innerHTML = '<option value="">Selecciona municipi...</option>';
+    municipis.forEach(nom => { const o = document.createElement('option'); o.value = nom; o.textContent = nom; sel.appendChild(o); });
+    sel.disabled = false;
+  } catch(e) { sel.innerHTML = '<option value="">Error carregant</option>'; sel.disabled = false; }
+}
+
+// ============================================
+// CERCA ISBN EXISTENT
+// ============================================
+async function cercaISBNExistent(valor, prefix) {
+  const isbn = valor.trim().replace(/[^0-9X]/gi, '');
+  const feedback = document.getElementById(prefix + '-isbn-feedback');
+  clearTimeout(_isbnTimer);
+  if (isbn.length < 10) { feedback.style.display = 'none'; return; }
+  feedback.textContent = 'Cercant...';
+  feedback.style.color = 'var(--gris)';
+  feedback.style.display = '';
+  _isbnTimer = setTimeout(async () => {
+    // Buscar primer al catàleg (persisteix per sempre)
+    const { data } = await sb.from('cataleg').select('titol, editorial, curs, materia').eq('isbn13', isbn).maybeSingle();
+    if (data) {
+      document.getElementById(prefix + '-titol').value = data.titol || '';
+      document.getElementById(prefix + '-editorial').value = data.editorial || '';
+      document.getElementById(prefix + '-curs').value = data.curs || '';
+      actualitzaMateries(prefix);
+      document.getElementById(prefix + '-materia').value = data.materia || '';
+      feedback.textContent = 'Llibre trobat al cataleg! Camps omplerts automaticament.';
+      feedback.style.color = 'var(--verd)';
+    } else {
+      feedback.textContent = 'ISBN nou - omple les dades manualment.';
+      feedback.style.color = 'var(--gris)';
+    }
+  }, 500);
+}
+
+// ============================================
+// FOTOS (Cloudinary)
+// ============================================
+function obreFoto(prefix, tipus, mode) {
+  const input = document.getElementById(prefix + '-foto-' + tipus);
+  if (mode === 'camera') input.setAttribute('capture', 'environment');
+  else input.removeAttribute('capture');
+  input.click();
+}
+
+function previsualitzaFoto(prefix, tipus, input) {
+  const fitxer = input.files[0];
+  if (!fitxer) return;
+  comprimeixImatge(fitxer, 800, 0.7).then(blob => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById(prefix + '-img-' + tipus).src = url;
+    document.getElementById(prefix + '-preview-' + tipus).style.display = '';
+    input._blobComprimit = blob;
+  });
+}
+
+function eliminaFoto(prefix, tipus) {
+  const input = document.getElementById(prefix + '-foto-' + tipus);
+  input.value = '';
+  input._blobComprimit = null;
+  document.getElementById(prefix + '-preview-' + tipus).style.display = 'none';
+  document.getElementById(prefix + '-img-' + tipus).src = '';
+}
+
+function comprimeixImatge(fitxer, maxAmpla, qualitat) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const url = URL.createObjectURL(fitxer);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      if (w > maxAmpla) { h = Math.round(h * maxAmpla / w); w = maxAmpla; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => resolve(blob), 'image/jpeg', qualitat);
+    };
+    img.src = url;
+  });
+}
+
+async function pujafotoCloudinary(input, carpeta) {
+  let blob = input._blobComprimit;
+  if (!blob && input.files[0]) blob = await comprimeixImatge(input.files[0], 800, 0.7);
+  if (!blob) return '';
+  const formData = new FormData();
+  formData.append('file', blob, 'foto.jpg');
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+  formData.append('folder', 'passacurs/' + carpeta);
+  const r = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', { method: 'POST', body: formData });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message);
+  return d.secure_url;
+}
+
+// ============================================
+// OFEREIXO — PUBLICAR LLIBRE
+// ============================================
+async function publicaLlibre() {
+  const err = document.getElementById('of-error');
+  const progress = document.getElementById('of-progress');
+  const btn = document.getElementById('btn-publicar');
+  err.style.display = 'none';
+
+  const isbn = document.getElementById('of-isbn').value.trim().replace(/[^0-9X]/gi, '');
+  const titol = document.getElementById('of-titol').value.trim();
+  const editorial = document.getElementById('of-editorial').value;
+  const curs = document.getElementById('of-curs').value;
+  const materia = getMateriaFinal('of');
+  const estat = document.getElementById('of-estat').value;
+
+  if (!isbn || isbn.length < 10) { mostrarError(err, 'L\'ISBN es obligatori (10 o 13 digits)'); return; }
+  if (!titol) { mostrarError(err, 'El titol es obligatori'); return; }
+  if (!editorial) { mostrarError(err, 'Selecciona l\'editorial'); return; }
+  if (!curs) { mostrarError(err, 'Selecciona el curs'); return; }
+  if (!materia || materia === '__altra__') { mostrarError(err, 'Escriu el nom de la materia'); return; }
+  if (!estat) { mostrarError(err, 'Selecciona l\'estat de l\'exemplar'); return; }
+
+  btn.textContent = 'Publicant...'; btn.disabled = true;
+
+  try {
+    let urlPortada = '', urlP113 = '';
+    const inputPortada = document.getElementById('of-foto-portada');
+    const inputP113 = document.getElementById('of-foto-p113');
+    if (inputPortada._blobComprimit || inputPortada.files[0]) {
+      progress.textContent = 'Pujant foto portada...'; progress.style.display = '';
+      urlPortada = await pujafotoCloudinary(inputPortada, 'portades');
+    }
+    if (inputP113._blobComprimit || inputP113.files[0]) {
+      progress.textContent = 'Pujant foto pagina 113...';
+      urlP113 = await pujafotoCloudinary(inputP113, 'p113');
+    }
+    progress.style.display = 'none';
+
+    const { error } = await sb.from('llibres').insert({
+      usuari_id: usuariActual.id, isbn13: isbn, titol, editorial, curs, materia,
+      estat_exemplar: estat, estat_oferta: 'disponible',
+      foto_portada_url: urlPortada, foto_p113_url: urlP113
+    });
+    if (error) { mostrarError(err, 'Error publicant: ' + error.message); btn.textContent = 'Publicar llibre'; btn.disabled = false; return; }
+
+    // Guardar/actualitzar al catàleg (persisteix per sempre)
+    await sb.from('cataleg').upsert({
+      isbn13: isbn, titol, editorial, curs, materia,
+      data_actualitzacio: new Date().toISOString()
+    }, { onConflict: 'isbn13' });
+
+    await notificaListesEspera(isbn);
+    netejFormulariOferta();
+    await carregaMeusLlibres();
+    err.textContent = 'Llibre publicat correctament!';
+    err.style.color = '#1D9E75'; err.style.display = '';
+    setTimeout(() => { err.style.display = 'none'; err.style.color = '#c0392b'; }, 3000);
+  } catch(e) { mostrarError(err, 'Error inesperat: ' + e.message); }
+  btn.textContent = 'Publicar llibre'; btn.disabled = false;
+}
+
+function netejFormulariOferta() {
+  ['of-isbn','of-titol'].forEach(id => document.getElementById(id).value = '');
+  ['of-editorial','of-curs','of-materia','of-estat'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('of-altra-div').style.display = 'none';
+  document.getElementById('of-altra-materia').value = '';
+  eliminaFoto('of', 'portada'); eliminaFoto('of', 'p113');
+  document.getElementById('of-isbn-feedback').style.display = 'none';
+  document.getElementById('of-error').style.display = 'none';
+}
+
+async function notificaListesEspera(isbn13) {
+  const { data } = await sb.from('llistes_espera').select('usuari_id').eq('isbn13', isbn13).eq('estat', 'activa');
+  if (!data?.length) return;
+  await sb.from('avisos').insert(data.map(e => ({
+    usuari_id: e.usuari_id, tipus: 'llibre_disponible',
+    contingut_json: { isbn13 }, llegit: false
+  })));
+}
+
+// ============================================
+// OFEREIXO — LLISTA MEUS LLIBRES
+// ============================================
+async function carregaMeusLlibres() {
+  if (!usuariActual) return;
+  const { data } = await sb.from('llibres')
+    .select('id, isbn13, titol, editorial, curs, materia, estat_exemplar, estat_oferta, foto_portada_url')
+    .eq('usuari_id', usuariActual.id)
+    .neq('estat_oferta', 'cancel·lat')
+    .order('data_publicacio', { ascending: false });
+
+  const buit = '<div class="buit"><div class="ico">📭</div><p>Encara no has publicat cap llibre</p></div>';
+  const html = !data?.length ? buit : data.map(o => {
+    const estatColor = o.estat_oferta === 'disponible' ? 'verd' : 'groc';
+    const estatText = o.estat_oferta === 'disponible' ? 'Disponible' : o.estat_oferta === 'reservat' ? 'Reservat' : 'Entregat';
+    return `<div class="llibre-item" id="ll-${o.id}">
+      <img class="llibre-portada" src="${o.foto_portada_url || 'icona.png'}" alt="">
+      <div class="llibre-info" style="flex:1">
+        <p class="llibre-titol">${o.titol || '—'}</p>
+        <p class="llibre-meta">${[o.editorial, o.curs, o.materia].filter(Boolean).join(' · ')}</p>
+        <span class="pill verd">${formatEstat(o.estat_exemplar)}</span>
+        <span class="pill ${estatColor}" style="margin-left:4px">${estatText}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+        <button onclick="editaLlibre('${o.id}')" style="background:none;border:none;color:var(--verd);font-size:20px;cursor:pointer;padding:4px">✏️</button>
+        <button onclick="eliminaLlibre('${o.id}')" style="background:none;border:none;color:#c0392b;font-size:20px;cursor:pointer;padding:4px">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  ['meus-llibres', 'meus-llibres-ofereixo'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  });
+}
+
+async function editaLlibre(id) {
+  const { data, error } = await sb.from('llibres')
+    .select('*').eq('id', id).eq('usuari_id', usuariActual.id).single();
+  if (error || !data) { alert('Error carregant les dades'); return; }
+
+  llibreEditantId = id;
+  document.getElementById('ed-isbn').value = data.isbn13 || '';
+  document.getElementById('ed-titol').value = data.titol || '';
+  document.getElementById('ed-editorial').value = data.editorial || '';
+  document.getElementById('ed-curs').value = data.curs || '';
+  actualitzaMateries('ed');
+  document.getElementById('ed-materia').value = data.materia || '';
+  document.getElementById('ed-estat').value = data.estat_exemplar || '';
+  document.getElementById('ed-img-portada').src = data.foto_portada_url || 'icona.png';
+  document.getElementById('ed-img-p113').src = data.foto_p113_url || 'icona.png';
+  document.getElementById('ed-foto-portada').value = '';
+  document.getElementById('ed-foto-p113').value = '';
+  document.getElementById('ed-foto-portada')._blobComprimit = null;
+  document.getElementById('ed-foto-p113')._blobComprimit = null;
+  document.getElementById('ed-isbn-feedback').style.display = 'none';
+  document.getElementById('ed-error').style.display = 'none';
+  nav('editar-llibre');
+}
+
+async function guardaEdicio() {
+  const err = document.getElementById('ed-error');
+  const progress = document.getElementById('ed-progress');
+  const btn = document.getElementById('btn-guardar');
+  err.style.display = 'none';
+
+  const isbn = document.getElementById('ed-isbn').value.trim().replace(/[^0-9X]/gi, '');
+  const titol = document.getElementById('ed-titol').value.trim();
+  const editorial = document.getElementById('ed-editorial').value;
+  const curs = document.getElementById('ed-curs').value;
+  const materia = getMateriaFinal('ed');
+  const estat = document.getElementById('ed-estat').value;
+
+  if (!isbn || isbn.length < 10) { mostrarError(err, 'L\'ISBN es obligatori'); return; }
+  if (!titol) { mostrarError(err, 'El titol es obligatori'); return; }
+  if (!editorial) { mostrarError(err, 'Selecciona l\'editorial'); return; }
+  if (!curs) { mostrarError(err, 'Selecciona el curs'); return; }
+  if (!materia || materia === '__altra__') { mostrarError(err, 'Escriu el nom de la materia'); return; }
+  if (!estat) { mostrarError(err, 'Selecciona l\'estat'); return; }
+
+  btn.textContent = 'Guardant...'; btn.disabled = true;
+
+  try {
+    // Fotos: recuperar URLs actuals primer
+    const { data: actual } = await sb.from('llibres').select('foto_portada_url, foto_p113_url').eq('id', llibreEditantId).single();
+    let urlPortada = actual?.foto_portada_url || '';
+    let urlP113 = actual?.foto_p113_url || '';
+
+    const inputPortada = document.getElementById('ed-foto-portada');
+    const inputP113 = document.getElementById('ed-foto-p113');
+    if (inputPortada._blobComprimit || inputPortada.files[0]) {
+      progress.textContent = 'Pujant foto portada...'; progress.style.display = '';
+      urlPortada = await pujafotoCloudinary(inputPortada, 'portades');
+    }
+    if (inputP113._blobComprimit || inputP113.files[0]) {
+      progress.textContent = 'Pujant foto pagina 113...';
+      urlP113 = await pujafotoCloudinary(inputP113, 'p113');
+    }
+    progress.style.display = 'none';
+
+    const { error } = await sb.from('llibres').update({
+      isbn13: isbn, titol, editorial, curs, materia,
+      estat_exemplar: estat, foto_portada_url: urlPortada, foto_p113_url: urlP113,
+      data_actualitzacio: new Date().toISOString()
+    }).eq('id', llibreEditantId).eq('usuari_id', usuariActual.id);
+
+    if (error) { mostrarError(err, 'Error guardant: ' + error.message); btn.textContent = 'Guardar canvis'; btn.disabled = false; return; }
+
+    // Actualitzar catàleg amb les dades millorades
+    await sb.from('cataleg').upsert({
+      isbn13: isbn, titol, editorial, curs, materia,
+      data_actualitzacio: new Date().toISOString()
+    }, { onConflict: 'isbn13' });
+
+    await carregaMeusLlibres();
+    navegaEnrere();
+  } catch(e) { mostrarError(err, 'Error inesperat: ' + e.message); }
+  btn.textContent = 'Guardar canvis'; btn.disabled = false;
+}
+
+async function eliminaLlibre(id) {
+  if (!confirm('Segur que vols eliminar aquest llibre?')) return;
+  const { error } = await sb.from('llibres').delete().eq('id', id).eq('usuari_id', usuariActual.id);
+  if (error) { alert('Error eliminant: ' + error.message); return; }
+  await carregaMeusLlibres();
+}
+
+// ============================================
+// BUSCO LLIBRES
+// ============================================
+
+
+
+async function carregaCursosFormularis() {
+  const { data } = await sb.from('cataleg')
+    .select('curs').not('curs', 'is', null).neq('curs', '');
+  if (!data?.length) return;
+
+  const cursos = [...new Set(data.map(d => d.curs).filter(Boolean))].sort((a, b) => {
+    const ordre = ['Primaria', 'ESO', 'Batxillerat', 'CFGM', 'CFGS'];
+    const nA = ordre.findIndex(n => a.includes(n));
+    const nB = ordre.findIndex(n => b.includes(n));
+    if (nA !== nB) return nA - nB;
+    return a.localeCompare(b, 'ca');
+  });
+
+  // Omplir tots els selects de curs dels formularis
+  ['of-curs', 'ed-curs', 'manual-curs'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const valorActual = sel.value;
+    sel.innerHTML = '<option value="">Selecciona curs...</option>';
+    cursos.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      sel.appendChild(o);
+    });
+    if (valorActual) sel.value = valorActual;
+  });
+}
+
+async function carregaMateriesFormulari(idMateria) {
+  const idCurs = idMateria.replace('materia', 'curs');
+  const curs = document.getElementById(idCurs)?.value;
+  const sel = document.getElementById(idMateria);
+  if (!sel) return;
+
+  let query = sb.from('cataleg').select('materia').not('materia', 'is', null).neq('materia', '');
+  if (curs) query = query.eq('curs', curs);
+  const { data } = await query;
+
+  const materies = [...new Set((data || []).map(d => d.materia).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ca'));
+  const valorActual = sel.value;
+  sel.innerHTML = '<option value="">Selecciona materia...</option>';
+  materies.forEach(m => {
+    const o = document.createElement('option');
+    o.value = m; o.textContent = m;
+    sel.appendChild(o);
+  });
+
+  // Sempre afegir opció "Altra" al final
+  const oAltra = document.createElement('option');
+  oAltra.value = '__altra__';
+  oAltra.textContent = 'Altra materia (no a la llista)...';
+  sel.appendChild(oAltra);
+
+  if (valorActual) sel.value = valorActual;
+}
+
+function mostraAltraMateria(prefix) {
+  const val = document.getElementById(prefix + '-materia').value;
+  const div = document.getElementById(prefix + '-altra-div');
+  if (!div) return;
+  div.style.display = val === '__altra__' ? '' : 'none';
+  if (val !== '__altra__') {
+    const inp = document.getElementById(prefix + '-altra-materia');
+    if (inp) inp.value = '';
+  }
+}
+
+function getMateriaFinal(prefix) {
+  const sel = document.getElementById(prefix + '-materia');
+  if (sel.value === '__altra__') {
+    return document.getElementById(prefix + '-altra-materia')?.value.trim() || '';
+  }
+  return sel.value;
+}
+
+// ============================================
+// CURSOS I MATERIES DINÀMICS DES DEL CATÀLEG
+// ============================================
+async function carregaCursosDelCataleg() {
+  const sel = document.getElementById('cerca-curs');
+  if (!sel) return;
+
+  const { data } = await sb.from('cataleg')
+    .select('curs')
+    .not('curs', 'is', null)
+    .neq('curs', '');
+
+  if (!data?.length) return;
+
+  // Obtenir valors únics i ordenar
+  const cursos = [...new Set(data.map(d => d.curs).filter(Boolean))].sort((a, b) => {
+    // Ordenar per nivell educatiu
+    const ordre = ['Primaria', 'ESO', 'Batxillerat', 'CFGM', 'CFGS'];
+    const nivelA = ordre.findIndex(n => a.includes(n));
+    const nivelB = ordre.findIndex(n => b.includes(n));
+    if (nivelA !== nivelB) return nivelA - nivelB;
+    return a.localeCompare(b, 'ca');
+  });
+
+  sel.innerHTML = '<option value="">Selecciona curs...</option>';
+  cursos.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    sel.appendChild(o);
+  });
+}
+
+async function carregaMateriesDeCataleg() {
+  const curs = document.getElementById('cerca-curs').value;
+  const sel = document.getElementById('cerca-materia');
+  sel.innerHTML = '<option value="">Totes les materies</option>';
+
+  let query = sb.from('cataleg').select('materia').not('materia', 'is', null).neq('materia', '');
+  if (curs) query = query.eq('curs', curs);
+
+  const { data } = await query;
+  if (!data?.length) return;
+
+  const materies = [...new Set(data.map(d => d.materia).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ca'));
+  materies.forEach(m => {
+    const o = document.createElement('option');
+    o.value = m; o.textContent = m;
+    sel.appendChild(o);
+  });
+}
+
+// Variable per guardar el llibre del catàleg seleccionat
+let _catalegSeleccionat = null;
+let _isbnCatalegTimer = null;
+
+// MODE 1: Cerca per ISBN al catàleg
+async function cercaISBNAlCataleg(valor) {
+  const isbn = valor.trim().replace(/[^0-9X]/gi, '');
+  const divResultat = document.getElementById('cataleg-isbn-resultat');
+  const divNou = document.getElementById('cataleg-isbn-nou');
+  const cardManual = document.getElementById('card-manual');
+
+  clearTimeout(_isbnCatalegTimer);
+  divResultat.style.display = 'none';
+  divNou.style.display = 'none';
+  _catalegSeleccionat = null;
+
+  if (isbn.length < 10) return;
+
+  _isbnCatalegTimer = setTimeout(async () => {
+    const { data } = await sb.from('cataleg').select('*').eq('isbn13', isbn).maybeSingle();
+
+    if (data) {
+      // Trobat al catàleg
+      document.getElementById('cataleg-isbn-titol').textContent = data.titol || '—';
+      document.getElementById('cataleg-isbn-meta').textContent = [data.editorial, data.curs, data.materia].filter(Boolean).join(' · ');
+      divResultat.style.display = '';
+      cardManual.style.display = 'none';
+      _catalegSeleccionat = data;
+    } else {
+      // No trobat: mostrar opció manual
+      divNou.style.display = '';
+      cardManual.style.display = '';
+      document.getElementById('manual-isbn').value = isbn;
+    }
+  }, 500);
+}
+
+async function afegeixCercaDesCataleg() {
+  if (!_catalegSeleccionat) return;
+  await afegeixALlistaEspera(_catalegSeleccionat.isbn13, _catalegSeleccionat.titol, _catalegSeleccionat.editorial, _catalegSeleccionat.curs, _catalegSeleccionat.materia);
+  // Netejar
+  document.getElementById('busco-isbn').value = '';
+  document.getElementById('cataleg-isbn-resultat').style.display = 'none';
+  _catalegSeleccionat = null;
+}
+
+// MODE 2: Cerca per curs/materia al catàleg
+async function cercaAlCatalegPerCurs() {
+  const curs = document.getElementById('cerca-curs').value;
+  const materia = document.getElementById('cerca-materia').value;
+  if (!curs && !materia) { alert('Selecciona almenys el curs o la materia'); return; }
+
+  const btn = document.querySelector('[onclick="cercaAlCatalegPerCurs()"]');
+  if (btn) { btn.textContent = 'Cercant...'; btn.disabled = true; }
+
+  let query = sb.from('cataleg').select('*');
+  // Cerca exacta (els valors venen directament del catàleg, coincidiran sempre)
+  if (curs) query = query.eq('curs', curs);
+  if (materia) query = query.eq('materia', materia);
+  query = query.order('titol');
+
+  const { data, error } = await query;
+  if (btn) { btn.textContent = 'Cercar al cataleg'; btn.disabled = false; }
+
+  const cont = document.getElementById('cataleg-curs-llista');
+  const divResultats = document.getElementById('cataleg-curs-resultats');
+
+  if (error || !data?.length) {
+    divResultats.style.display = '';
+    cont.innerHTML = `<p style="font-size:13px;color:var(--gris);margin-bottom:8px">No hem trobat res al cataleg.</p>` +
+      `<button class="btn-secondary" onclick="document.getElementById('card-manual').style.display=''" style="font-size:13px;padding:10px">+ Afegir manualment</button>`;
+    return;
+  }
+
+  divResultats.style.display = '';
+  cont.innerHTML = data.map(ll => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--vora)">
+      <div style="flex:1;min-width:0">
+        <p style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ll.titol}</p>
+        <p style="font-size:12px;color:var(--gris)">${[ll.editorial, ll.curs, ll.materia].filter(Boolean).join(' · ')}</p>
+      </div>
+      <button onclick="seleccionaDelCataleg('${ll.isbn13}','${ll.titol.replace(/'/g,'').replace(/"/g,'')}','${ll.editorial}','${ll.curs}','${ll.materia}')"
+        style="background:var(--verd);color:white;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;flex-shrink:0">
+        + Afegir
+      </button>
+    </div>`).join('') +
+    `<div style="padding-top:10px"><button class="btn-secondary" onclick="document.getElementById('card-manual').style.display=''" style="font-size:13px;padding:10px">No el trobo, afegir manualment</button></div>`;
+}
+
+async function seleccionaDelCataleg(isbn13, titol, editorial, curs, materia) {
+  await afegeixALlistaEspera(isbn13, titol, editorial, curs, materia);
+  // Netejar els resultats del catàleg
+  document.getElementById('cataleg-curs-resultats').style.display = 'none';
+  document.getElementById('cerca-curs').value = '';
+  document.getElementById('cerca-materia').value = '';
+}
+
+// MODE 3: Afegir manualment
+async function afegeixCercaManual() {
+  const isbn = document.getElementById('manual-isbn').value.trim().replace(/[^0-9X]/gi, '');
+  const titol = document.getElementById('manual-titol').value.trim();
+  const editorial = document.getElementById('manual-editorial').value;
+  const curs = document.getElementById('manual-curs').value;
+  const materia = document.getElementById('manual-materia').value;
+  const err = document.getElementById('manual-error');
+  err.style.display = 'none';
+
+  if (!titol) { err.textContent = 'El titol es obligatori'; err.style.display = ''; return; }
+
+  // Afegir al catàleg (creix la BD per a tots)
+  if (isbn) {
+    await sb.from('cataleg').upsert({
+      isbn13: isbn, titol, editorial, curs, materia,
+      data_actualitzacio: new Date().toISOString()
+    }, { onConflict: 'isbn13' });
+  }
+
+  await afegeixALlistaEspera(isbn || null, titol, editorial, curs, materia);
+
+  // Netejar
+  ['manual-isbn','manual-titol'].forEach(id => document.getElementById(id).value = '');
+  ['manual-editorial','manual-curs','manual-materia'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('card-manual').style.display = 'none';
+  document.getElementById('busco-isbn').value = '';
+  document.getElementById('cataleg-isbn-nou').style.display = 'none';
+}
+
+// FUNCIÓ COMUNA: afegir a llistes_espera i buscar ofertes
+async function afegeixALlistaEspera(isbn13, titol, editorial, curs, materia) {
+  // Guardar a llistes_espera
+  const dades = {
+    usuari_id: usuariActual.id,
+    titol: titol || '',
+    editorial: editorial || '',
+    estat: 'activa'
+  };
+  if (isbn13) dades.isbn13 = isbn13;
+
+  if (isbn13) {
+    await sb.from('llistes_espera').upsert(dades, { onConflict: 'usuari_id,isbn13' });
+  } else {
+    await sb.from('llistes_espera').insert(dades);
+  }
+
+  await carregaBuscoResum();
+
+  // Buscar si algú ofereix aquest llibre ara
+  let query = sb.from('llibres')
+    .select('id, isbn13, titol, editorial, curs, materia, estat_exemplar, estat_oferta, foto_portada_url, usuari_id, usuaris!inner(nom_usuari, municipi, provincia)')
+    .eq('estat_oferta', 'disponible')
+    .neq('usuari_id', usuariActual.id);
+
+  if (isbn13) {
+    query = query.eq('isbn13', isbn13);
+  } else {
+    if (curs) query = query.eq('curs', curs);
+    if (materia) query = query.eq('materia', materia);
+  }
+
+  const { data: resultats } = await query;
+  mostraResultats(resultats || [], isbn13 ? [isbn13] : [], 'cerca');
+}
+
+async function carregaBuscoResum() {
+  if (!usuariActual) return;
+
+  const { data: llista } = await sb.from('llistes_espera')
+    .select('id, isbn13, titol, editorial, estat')
+    .eq('usuari_id', usuariActual.id)
+    .eq('estat', 'activa')
+    .order('data_entrada', { ascending: false });
+
+  if (!llista?.length) {
+    const buit = '<div class="buit"><div class="ico">🔎</div><p>Encara no busques cap llibre</p></div>';
+    const el1 = document.getElementById('busco-resum');
+    const el2 = document.getElementById('llista-busco-persistent');
+    if (el1) el1.innerHTML = buit;
+    if (el2) el2.innerHTML = '<div class="buit"><div class="ico">🔎</div><p>Encara no has afegit cap llibre a la teva llista</p></div>';
+    const count = document.getElementById('busco-count');
+    if (count) count.textContent = '';
+    return;
+  }
+
+  // Comptar disponibilitat per cada ISBN
+  const isbns = llista.map(l => l.isbn13);
+  const { data: disponibles } = await sb.from('llibres')
+    .select('isbn13')
+    .in('isbn13', isbns)
+    .eq('estat_oferta', 'disponible')
+    .neq('usuari_id', usuariActual.id);
+
+  const comptador = {};
+  (disponibles || []).forEach(d => { comptador[d.isbn13] = (comptador[d.isbn13] || 0) + 1; });
+
+  const htmlItems = llista.map(l => {
+    const n = comptador[l.isbn13] || 0;
+    const pillHtml = n > 0
+      ? `<span class="pill verd">${n} disponible${n > 1 ? 's' : ''}</span>`
+      : '<span class="pill groc">En espera</span>';
+    const veureBtnHtml = n > 0
+      ? `<button onclick="cercaISBNDireccte(this.dataset.isbn)" data-isbn="${l.isbn13}" style="background:none;border:none;color:var(--verd);font-size:12px;font-weight:600;cursor:pointer;padding:0">Veure</button>`
+      : '';
+    return `<div class="llibre-item" style="align-items:center" data-espera-id="${l.id}">
+      <div class="llibre-info" style="flex:1">
+        <p class="llibre-titol">${l.titol || l.isbn13}</p>
+        <p class="llibre-meta">${l.editorial || ''}</p>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:4px">${pillHtml}${veureBtnHtml}</div>
+      </div>
+      <button onclick="eliminaDeLlista('${l.id}')" style="background:none;border:none;color:#c0392b;font-size:22px;cursor:pointer;padding:4px;flex-shrink:0">🗑️</button>
+    </div>`;
+  }).join('');
+
+  const el1 = document.getElementById('busco-resum');
+  const el2 = document.getElementById('llista-busco-persistent');
+  const count = document.getElementById('busco-count');
+  if (el1) el1.innerHTML = htmlItems;
+  if (el2) el2.innerHTML = htmlItems;
+  if (count) count.textContent = llista.length + ' llibre' + (llista.length > 1 ? 's' : '');
+}
+
+async function eliminaDeLlista(id) {
+  if (!id) return;
+
+  // Eliminar visualment de forma immediata (tots els divs amb aquest id)
+  document.querySelectorAll(`[data-espera-id="${id}"]`).forEach(el => el.remove());
+
+  const { error } = await sb.from('llistes_espera').delete().eq('id', id).eq('usuari_id', usuariActual.id);
+  if (error) { console.error('Error eliminant:', error); await carregaBuscoResum(); return; }
+
+  // Recarregar per assegurar consistencia
+  await carregaBuscoResum();
+}
+
+async function cercaISBNDireccte(isbn) {
+  // Anar a la pantalla busco i esperar que carregui
+  nav('busco');
+  // Petit delay per assegurar que la vista esta activa
+  await new Promise(r => setTimeout(r, 50));
+  const { data: resultats } = await sb.from('llibres')
+    .select('id, isbn13, titol, editorial, curs, materia, estat_exemplar, foto_portada_url, usuari_id, usuaris!inner(nom_usuari, municipi)')
+    .eq('isbn13', isbn)
+    .eq('estat_oferta', 'disponible')
+    .neq('usuari_id', usuariActual.id);
+  mostraResultats(resultats || [], [isbn]);
+  // Fer scroll fins als resultats
+  setTimeout(() => {
+    document.getElementById('resultats-busco')?.scrollIntoView({ behavior: 'smooth' });
+  }, 100);
+}
+
+function mostraResultats(resultats, isbnsOriginals, tipusCerca) {
+  const cont = document.getElementById('llista-resultats');
+  const seccio = document.getElementById('resultats-busco');
+  seccio.style.display = '';
+
+  if (!resultats.length) {
+    cont.innerHTML = `<div class="card buit"><div class="ico">😔</div><p>No hem trobat cap exemplar disponible. Afegeix-lo a la teva llista i t'avisarem quan aparegui.</p></div>`;
+    if (isbnsOriginals?.length) {
+      const extra = document.createElement('div');
+      extra.className = 'card';
+      extra.style.marginTop = '8px';
+      extra.innerHTML = `<p style="font-size:14px;margin-bottom:12px">Vols que t'avisem quan aparegui?</p>` +
+        isbnsOriginals.map(isbn => `<button onclick="afegeixALlista('${isbn}','','')" class="btn-primary" style="margin-bottom:8px">+ Afegir a la meva llista</button>`).join('');
+      cont.appendChild(extra);
+    }
+    return;
+  }
+
+  // Obtenir municipi de l'usuari per ordenar per proximitat
+  let municipiUsuari = '';
+  sb.from('usuaris').select('municipi').eq('id', usuariActual.id).single().then(({ data }) => {
+    municipiUsuari = data?.municipi || '';
+  });
+
+  // Ordenar per estat exemplar (millor primer)
+  const ordre = { nou: 0, com_nou: 1, bo: 2, acceptable: 3, molt_usat: 4 };
+  const ordenats = [...resultats].sort((a, b) => (ordre[a.estat_exemplar] || 5) - (ordre[b.estat_exemplar] || 5));
+
+  cont.innerHTML = '';
+  ordenats.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.marginBottom = '10px';
+    card.innerHTML = `
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <img src="${o.foto_portada_url || 'icona.png'}" style="width:60px;height:80px;object-fit:cover;border-radius:6px;flex-shrink:0;cursor:pointer" onclick="window.open('${o.foto_portada_url || ''}','_blank')">
+        <div style="flex:1;min-width:0">
+          <p style="font-weight:600;font-size:14px;margin-bottom:2px">${o.titol || '—'}</p>
+          <p style="font-size:12px;color:var(--gris);margin-bottom:4px">${[o.editorial, o.curs, o.materia].filter(Boolean).join(' · ')}</p>
+          <span class="pill verd" style="margin-bottom:6px;display:inline-block">${formatEstat(o.estat_exemplar)}</span>
+          <p style="font-size:12px;color:var(--gris)">👤 ${o.usuaris.nom_usuari} · 📍 ${o.usuaris.municipi}</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn-secondary" style="padding:10px;font-size:13px;margin:0"
+          data-id="${o.id}"
+          onclick="veureDetalls(this.dataset.id)">
+          🔎
+        </button>
+        <button class="btn-primary" style="flex:1;padding:10px;font-size:13px;margin:0"
+          onclick="mostraPerfilOferidor('${o.usuari_id}','${o.usuaris.nom_usuari}','${o.usuaris.municipi}')">
+          💬 Contactar
+        </button>
+        <button class="btn-secondary" style="flex:1;padding:10px;font-size:13px;margin:0"
+          data-id="${o.id}"
+          onclick="afegeixAInteressenBtn(this)">
+          ♡ M'interessa
+        </button>
+      </div>`;
+    cont.appendChild(card);
+  });
+
+  setTimeout(() => seccio.scrollIntoView({ behavior: 'smooth' }), 100);
+}
+
+// M'INTERESSEN
+async function afegeixAInteressenBtn(btn) {
+  const llibreId = btn.dataset.id;
+  if (!llibreId) return;
+  const { error } = await sb.from('m_interessen').upsert({
+    usuari_id: usuariActual.id,
+    llibre_id: llibreId
+  }, { onConflict: 'usuari_id,llibre_id' });
+  if (error) { console.error(error); return; }
+  btn.textContent = '❤️ Afegit';
+  btn.style.color = 'var(--taronja)';
+  btn.disabled = true;
+  await carregaInteressen();
+}
+
+async function eliminaDInteressen(id) {
+  if (!id) return;
+  await sb.from('m_interessen').delete().eq('id', id).eq('usuari_id', usuariActual.id);
+  await carregaInteressen();
+}
+
+async function carregaInteressen() {
+  if (!usuariActual) return;
+  const { data } = await sb.from('m_interessen')
+    .select('id, llibres!inner(id, titol, editorial, curs, materia, estat_exemplar, estat_oferta, foto_portada_url, usuari_id, usuaris!inner(nom_usuari, municipi, telefon))')
+    .eq('usuari_id', usuariActual.id)
+    .order('data_entrada', { ascending: false });
+
+  const cont = document.getElementById('interessen-resum');
+  const count = document.getElementById('interessen-count');
+  if (!cont) return;
+
+  if (!data?.length) {
+    cont.innerHTML = '<div class="buit"><div class="ico">🔍</div><p>Quan trobes un llibre que vols, prem ♡ per guardar-lo aqui</p></div>';
+    if (count) count.textContent = '';
+    return;
+  }
+
+  // Filtrar els que encara estan disponibles
+  const disponibles = data.filter(d => d.llibres.estat_oferta === 'disponible');
+  const noDisponibles = data.filter(d => d.llibres.estat_oferta !== 'disponible');
+
+  if (count) count.textContent = data.length + ' llibre' + (data.length > 1 ? 's' : '');
+
+  cont.innerHTML = disponibles.map(d => {
+    const l = d.llibres;
+    return `<div class="llibre-item" style="align-items:center">
+      <img class="llibre-portada" src="${l.foto_portada_url || 'icona.png'}" alt="">
+      <div class="llibre-info" style="flex:1">
+        <p class="llibre-titol">${l.titol || '—'}</p>
+        <p class="llibre-meta">${[l.editorial, l.curs, l.materia].filter(Boolean).join(' · ')}</p>
+        <p style="font-size:12px;color:var(--gris)">👤 ${l.usuaris.nom_usuari} · ${l.usuaris.municipi}</p>
+        <span class="pill verd" style="margin-top:4px">${formatEstat(l.estat_exemplar)}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+        <button onclick="mostraPerfilOferidor('${l.usuari_id}','${l.usuaris.nom_usuari}','${l.usuaris.municipi}')"
+          style="background:var(--verd);color:white;border:none;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer">💬</button>
+        <button onclick="eliminaDInteressen('${d.id}')"
+          style="background:none;border:none;color:#c0392b;font-size:18px;cursor:pointer;padding:2px">🗑️</button>
+      </div>
+    </div>`;
+  }).join('') + (noDisponibles.length ? `
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--vora)">
+      <p style="font-size:12px;color:var(--gris);margin-bottom:6px">Ja no disponibles:</p>
+      ${noDisponibles.map(d => `
+        <div class="llibre-item" style="opacity:0.5">
+          <div class="llibre-info" style="flex:1">
+            <p class="llibre-titol">${d.llibres.titol || '—'}</p>
+            <span class="pill groc">No disponible</span>
+          </div>
+          <button onclick="eliminaDInteressen('${d.id}')" style="background:none;border:none;color:#c0392b;font-size:18px;cursor:pointer">🗑️</button>
+        </div>`).join('')}
+    </div>` : '');
+}
+
+// ============================================
+// PERFIL OFERIDOR + WHATSAPP
+// ============================================
+let oferidorActual = null;
+
+async function mostraPerfilOferidor(uid, nom, muni) {
+  document.getElementById('oferidor-nom').textContent = nom;
+  document.getElementById('oferidor-muni').textContent = '📍 ' + muni;
+  oferidorActual = { uid, nom };
+
+  const { data } = await sb.from('llibres')
+    .select('id, titol, editorial, curs, materia, estat_exemplar, foto_portada_url')
+    .eq('usuari_id', uid).eq('estat_oferta', 'disponible');
+
+  document.getElementById('oferidor-llibres').innerHTML = (data || []).map(o => `
+    <div class="llibre-item">
+      <img class="llibre-portada" src="${o.foto_portada_url || 'icona.png'}" alt="">
+      <div class="llibre-info" style="flex:1">
+        <p class="llibre-titol">${o.titol || '—'}</p>
+        <p class="llibre-meta">${[o.editorial, o.curs, o.materia].filter(Boolean).join(' · ')}</p>
+        <span class="pill verd">${formatEstat(o.estat_exemplar)}</span>
+      </div>
+      <input type="checkbox" class="check-ll" data-titol="${o.titol || '—'}" data-id="${o.id}" style="width:22px;height:22px;accent-color:var(--verd);margin-top:4px;flex-shrink:0">
+    </div>`).join('');
+
+  nav('perfil-oferidor');
+}
+
+async function obreWhatsApp() {
+  const sel = Array.from(document.querySelectorAll('.check-ll:checked'));
+  if (!sel.length) { alert('Marca almenys un llibre'); return; }
+
+  const { data: usuari } = await sb.from('usuaris').select('telefon').eq('id', oferidorActual.uid).single();
+  if (!usuari) { alert('No hem pogut obtenir el contacte'); return; }
+
+  const { data: jo } = await sb.from('usuaris').select('nom_usuari, municipi').eq('id', usuariActual.id).single();
+
+  for (const c of sel) await afegeixACua(c.dataset.id);
+
+  const llistat = sel.map(c => '- ' + c.dataset.titol).join('\n');
+  const tel = usuari.telefon.replace(/\D/g, '').replace(/^0034/, '34').replace(/^6/, '346').replace(/^346/, '346');
+  const msg = encodeURIComponent('Hola! T\'escric des de Passacurs.\n\nEstic interessat/da en aquests llibres:\n\n' + llistat + '\n\nPodrien quedar per recollir-los?\n— ' + (jo?.nom_usuari || '') + ' (' + (jo?.municipi || '') + ')');
+  window.open('https://wa.me/' + tel + '?text=' + msg, '_blank');
+}
+
+async function afegeixACua(llibreId) {
+  const { data: cua } = await sb.from('cues').select('posicio').eq('llibre_id', llibreId).eq('estat', 'activa').order('posicio', { ascending: false }).limit(1);
+  const pos = cua?.length ? cua[0].posicio + 1 : 1;
+  await sb.from('cues').upsert({ llibre_id: llibreId, usuari_id: usuariActual.id, posicio: pos, estat: 'activa' }, { onConflict: 'llibre_id,usuari_id' });
+  if (pos === 1) await sb.from('llibres').update({ estat_oferta: 'reservat' }).eq('id', llibreId);
+}
+
+// ============================================
+// AVISOS
+// ============================================
+async function carregaAvisos() {
+  const { data } = await sb.from('avisos').select('*').eq('usuari_id', usuariActual.id).eq('llegit', false).order('data_creacio', { ascending: false });
+  const count = data?.length || 0;
+  const badge = document.getElementById('badge');
+  badge.style.display = count > 0 ? '' : 'none';
+  if (count > 0) {
+    badge.textContent = count;
+    document.getElementById('avis-banner').style.display = '';
+    document.getElementById('avis-text').textContent = 'Tens ' + count + ' avis' + (count > 1 ? 'os nous' : ' nou') + ' de llibres disponibles.';
+  }
+}
+
+// ============================================
+// PERFIL
+// ============================================
+async function carregaPerfil() {
+  if (!usuariActual) return;
+  const { data } = await sb.from('usuaris').select('nom_usuari, telefon, municipi, provincia').eq('id', usuariActual.id).maybeSingle();
+  if (!data) { await sb.from('usuaris').upsert({ id: usuariActual.id, email: usuariActual.email, nom_usuari: usuariActual.email.split('@')[0] }); return; }
+  document.getElementById('p-nom').value = data.nom_usuari || '';
+  document.getElementById('p-tel').value = data.telefon || '';
+  document.getElementById('p-prov').value = data.provincia || '';
+  if (data.provincia) { await carregaMunicipisPerfil(); document.getElementById('p-muni').value = data.municipi || ''; }
+}
+
+async function guardaPerfil() {
+  const nom = document.getElementById('p-nom').value.trim();
+  const tel = document.getElementById('p-tel').value.trim();
+  const prov = document.getElementById('p-prov').value;
+  const muni = document.getElementById('p-muni').value;
+  const err = document.getElementById('p-error');
+  const ok = document.getElementById('p-ok');
+  err.style.display = 'none'; ok.style.display = 'none';
+  if (!nom || !tel || !prov || !muni) { err.textContent = 'Omple tots els camps'; err.style.display = ''; return; }
+  const { error } = await sb.from('usuaris').update({ nom_usuari: nom, telefon: tel, municipi: muni, provincia: prov }).eq('id', usuariActual.id);
+  if (error) { err.textContent = 'Error: ' + error.message; err.style.display = ''; return; }
+  ok.style.display = '';
+  setTimeout(() => { ok.style.display = 'none'; }, 3000);
+}
+
+// ============================================
+// MODALS LEGALS
+// ============================================
+const TEXTOS_LEGALS = {
+  privacitat: {
+    titol: 'Politica de Privacitat',
+    cos: `<h3>1. Responsable</h3><p>Passacurs (passacurs.vercel.app). Contacte: passacurs.app@gmail.com</p>
+    <h3>2. Dades que recollim</h3><ul><li>Nom d'usuari, correu, telefon, municipi.</li><li>Dades dels llibres publicats.</li></ul>
+    <h3>3. Finalitat</h3><p>Facilitar l'intercanvi gratuit de llibres escolars.</p>
+    <h3>4. El teu telefon</h3><p>No es public. Nomes s'envia a l'usuari que es primer de la cua d'un teu exemplar.</p>
+    <h3>5. Els teus drets</h3><p>Acces, rectificacio, suprssio i portabilitat. Escriu a passacurs.app@gmail.com.</p>`
+  },
+  condicions: {
+    titol: 'Condicions d\'Us',
+    cos: `<h3>1. Servei gratuit</h3><p>Passacurs facilita el contacte entre families per intercanviar llibres escolars de manera completament gratuita.</p>
+    <h3>2. Normes</h3><ul><li>Publicar nomes llibres reals i en el teu poder.</li><li>Descriure l'estat honestament.</li><li>No us comercial.</li></ul>
+    <h3>3. Responsabilitat</h3><p>Passacurs no es fa responsable de les transaccions entre usuaris.</p>
+    <h3>4. Contacte</h3><p>passacurs.app@gmail.com</p>`
+  }
+};
+
+function obreModal(tipus) {
+  const modal = document.getElementById('modal-legal');
+  document.getElementById('modal-titol').textContent = TEXTOS_LEGALS[tipus].titol;
+  document.getElementById('modal-cos').innerHTML = TEXTOS_LEGALS[tipus].cos;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function tancaModal() {
+  document.getElementById('modal-legal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+
+
+// ============================================
+// MODAL DETALLS LLIBRE
+// ============================================
+async function veureDetalls(id) {
+  const { data: o, error } = await sb.from('llibres')
+    .select('*, usuaris!inner(nom_usuari, municipi, provincia)')
+    .eq('id', id)
+    .single();
+
+  if (error || !o) { alert('Error carregant detalls'); return; }
+
+  const modal = document.getElementById('modal-detalls');
+  const cos = document.getElementById('detalls-cos');
+
+  cos.innerHTML = `
+    <!-- Fotos -->
+    <div style="display:flex;gap:2px;height:200px;overflow:hidden">
+      ${o.foto_portada_url
+        ? `<img src="${o.foto_portada_url}" style="flex:1;object-fit:cover;cursor:pointer" onclick="window.open('${o.foto_portada_url}','_blank')" title="Toca per ampliar">`
+        : `<div style="flex:1;background:var(--vora);display:flex;align-items:center;justify-content:center;color:var(--gris);font-size:13px">Sense foto portada</div>`
+      }
+      ${o.foto_p113_url
+        ? `<img src="${o.foto_p113_url}" style="flex:1;object-fit:cover;cursor:pointer" onclick="window.open('${o.foto_p113_url}','_blank')" title="Toca per ampliar">`
+        : `<div style="flex:1;background:var(--vora);display:flex;align-items:center;justify-content:center;color:var(--gris);font-size:12px;text-align:center;padding:8px">Sense foto p.113</div>`
+      }
+    </div>
+    ${(o.foto_portada_url || o.foto_p113_url) ? '<p style="font-size:11px;color:var(--gris);text-align:center;padding:4px 0">Toca les fotos per ampliar-les</p>' : ''}
+
+    <!-- Dades -->
+    <div style="padding:16px">
+      <h3 style="font-size:17px;font-weight:700;margin-bottom:6px">${o.titol || '—'}</h3>
+      ${o.isbn13 ? `<p style="font-size:12px;color:var(--gris);margin-bottom:10px">ISBN: ${o.isbn13}</p>` : ''}
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div><p style="font-size:11px;color:var(--gris);margin-bottom:2px">Editorial</p><p style="font-size:14px;font-weight:500">${o.editorial || '—'}</p></div>
+        <div><p style="font-size:11px;color:var(--gris);margin-bottom:2px">Curs</p><p style="font-size:14px;font-weight:500">${o.curs || '—'}</p></div>
+        <div><p style="font-size:11px;color:var(--gris);margin-bottom:2px">Materia</p><p style="font-size:14px;font-weight:500">${o.materia || '—'}</p></div>
+        <div><p style="font-size:11px;color:var(--gris);margin-bottom:2px">Estat</p><p style="font-size:14px;font-weight:500">${formatEstat(o.estat_exemplar)}</p></div>
+      </div>
+
+      <div style="background:var(--fons);border-radius:10px;padding:12px;margin-bottom:14px">
+        <p style="font-size:12px;color:var(--gris);margin-bottom:2px">Ofert per</p>
+        <p style="font-size:14px;font-weight:600">👤 ${o.usuaris.nom_usuari}</p>
+        <p style="font-size:13px;color:var(--gris)">📍 ${o.usuaris.municipi}, ${o.usuaris.provincia}</p>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary" style="flex:1;margin:0"
+          onclick="document.getElementById('modal-detalls').style.display='none';mostraPerfilOferidor('${o.usuari_id}','${o.usuaris.nom_usuari}','${o.usuaris.municipi}')">
+          💬 Contactar
+        </button>
+        <button class="btn-secondary" style="flex:1;margin:0" id="btn-detalls-interessa"
+          onclick="afegeixAInteressenDetalls('${o.id}',this)">
+          ♡ M'interessa
+        </button>
+      </div>
+    </div>`;
+
+  modal.style.display = 'flex';
+}
+
+async function afegeixAInteressenDetalls(llibreId, btn) {
+  const { error } = await sb.from('m_interessen').upsert({
+    usuari_id: usuariActual.id,
+    llibre_id: llibreId
+  }, { onConflict: 'usuari_id,llibre_id' });
+  if (error) { console.error(error); return; }
+  btn.textContent = '❤️ Afegit';
+  btn.style.color = 'var(--taronja)';
+  btn.disabled = true;
+  await carregaInteressen();
+}
+
+// ============================================
+// HELPERS ISBN
+// ============================================
+function netejaISBN(valor) {
+  return valor.replace(/[^0-9X]/gi, '');
+}
+
+// ============================================
+// CERCA PER CURS I MATERIA
+// ============================================
+// cercaPerCursMateria eliminada - substituida per cercaAlCatalegPerCurs
+
+// ============================================
+// HELPERS
+// ============================================
+function formatEstat(e) {
+  return { nou: 'Nou', com_nou: 'Com nou', bo: 'Bo', acceptable: 'Acceptable', molt_usat: 'Molt usat' }[e] || e;
+}
+
+function mostrarError(el, msg) {
+  el.textContent = msg;
+  el.style.color = '#c0392b';
+  el.style.display = '';
+}
+</script>
+</body>
+</html>
